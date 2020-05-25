@@ -2,8 +2,8 @@
 
 RCSwitch Sender = RCSwitch();
 
-unsigned long SerialData = 0;
-unsigned long SendeCode = 0;
+long SerialData = 0;
+long SendeCode = 0;
 
 void setup() {
 
@@ -16,16 +16,16 @@ void setup() {
   
 }
 
-void loop() {
+void loop() {  
   /* Same switch as above, but using decimal code */
-  while (Serial.available()) {
-    SerialData = Serial.parseInt();
-    Serial.print("Empfangen: ");
-    Serial.println(SerialData);
-    Sender.send(SerialData, 32);
-    Serial.print("Sende: ");
-    Serial.println(SerialData);
+  long tempSerialData = Serial.parseInt();
+  if (tempSerialData > 0) {
+    SerialData = tempSerialData;
   }
   
-  //Serial.println("Sende");
+  Serial.print("Empfangen: "); Serial.println(SerialData);
+  Sender.send(SerialData, 32);
+  
+  Serial.print("Sende: "); Serial.println(SerialData);
+  delay(100);
 }
