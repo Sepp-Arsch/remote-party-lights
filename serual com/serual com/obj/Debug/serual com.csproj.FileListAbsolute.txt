@@ -1,0 +1,10 @@
+C:\Users\Simon\Desktop\Party\serual com\serual com\bin\Debug\serual com.exe.config
+C:\Users\Simon\Desktop\Party\serual com\serual com\bin\Debug\serual com.exe
+C:\Users\Simon\Desktop\Party\serual com\serual com\bin\Debug\serual com.pdb
+C:\Users\Simon\Desktop\Party\serual com\serual com\obj\Debug\serual com.csprojAssemblyReference.cache
+C:\Users\Simon\Desktop\Party\serual com\serual com\obj\Debug\serual_com.Form1.resources
+C:\Users\Simon\Desktop\Party\serual com\serual com\obj\Debug\serual_com.Properties.Resources.resources
+C:\Users\Simon\Desktop\Party\serual com\serual com\obj\Debug\serual com.csproj.GenerateResource.cache
+C:\Users\Simon\Desktop\Party\serual com\serual com\obj\Debug\serual com.csproj.CoreCompileInputs.cache
+C:\Users\Simon\Desktop\Party\serual com\serual com\obj\Debug\serual com.exe
+C:\Users\Simon\Desktop\Party\serual com\serual com\obj\Debug\serual com.pdb
