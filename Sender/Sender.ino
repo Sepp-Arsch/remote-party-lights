@@ -2,7 +2,6 @@
 
 RCSwitch Sender = RCSwitch();
 
-unsigned long SerialData = 0;
 unsigned long SendeCode = 0;
 
 void setup() {
@@ -22,12 +21,9 @@ void loop() {
     SerialData = Serial.parseInt();
     Serial.print("Empfangen: ");
     Serial.println(SerialData);
-    if (SerialData != 0){
-      Sender.send(SerialData, 32);
-      Serial.print("Sende: ");
-      Serial.println(SerialData);
-      SerialData = 0;
-    }
+    Sender.send(SerialData, 32);
+    Serial.print("Sende: ");
+    Serial.println(SerialData);
   }
   
   //Serial.println("Sende");
