@@ -2,6 +2,7 @@
 
 RCSwitch Sender = RCSwitch();
 
+unsigned long SerialData = 0;
 unsigned long SendeCode = 0;
 
 void setup() {
