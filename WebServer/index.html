@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <title>Arduino Party Lights</title>
+</head>
+<body>
+  <h2>Arduino Party Lights</h2>
+  <button type="button" class="btn btn-outline-primary">Calibrate</button>
+  <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">Connect</a>
+  <div class="row">
+    <div class="col-lg-4">.col-lg-4</div>
+    <div class="col-lg-4">.col-lg-4</div>
+    <div class="col-lg-4">.col-lg-4</div>
+  </div>
+  <div class="btn-group-toggle" data-toggle="buttons">
+    <label class="btn btn-secondary active">
+      <input type="checkbox" checked> Checked
+    </label>
+  </div>
+  $().button("toggle")
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn btn-secondary active">
+      <input type="radio" name="options" id="option1" checked> Active
+    </label>
+    <label class="btn btn-secondary">
+      <input type="radio" name="options" id="option2"> Radio
+    </label>
+    <label class="btn btn-secondary">
+      <input type="radio" name="options" id="option3"> Radio
+    </label>
+  </div>
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <span class="input-group-text" id="basic-addon1">@</span>
+    </div>
+    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+  </div>
+  <div class="wheel" id="colorWheel"></div>
+  <h1>Favorite colors</h1>
+
+
+  <!-- Optional JavaScript -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@jaames/iro"></script>
+
+
+
+  <script type="text/javascript">
+    var colorWheel = new iro.ColorPicker("#colorWheel", {
+      layout: [
+      {
+        component: iro.ui.Wheel
+      },
+      {
+        component: iro.ui.Slider,
+        options: {
+          sliderType: "hue"
+        }
+      },
+      {
+        component: iro.ui.Slider,
+        options: {
+          sliderType: "saturation"
+        }
+      },
+      {
+        component: iro.ui.Slider,
+        options: {
+          sliderType: "alpha"
+        }
+      }
+      ]
+    });
+    colorWheel.on("color:change", function(color, changes){
+      console.log(colorWheel.color.COLORFORMAT);
+    });
+
+
+
+
+    const SerialPort = require('serialport')
+const port = new SerialPort('/dev/tty-usbserial1', { autoOpen: false })
+
+port.open(function (err) {
+  if (err) {
+    return console.log('Error opening port: ', err.message)
+  }
+
+  // Because there's no callback to write, write errors will be emitted on the port:
+  port.write('main screen turn on')
+})
+
+// The open event is always emitted
+port.on('open', function() {
+  // open logic
+})
+
+port.write('Hi Mom!')
+  </script>
+</body>
+</html>

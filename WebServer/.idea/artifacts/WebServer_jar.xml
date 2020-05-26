@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="WebServer:jar">
+    <output-path>$PROJECT_DIR$</output-path>
+    <root id="archive" name="WebServer.jar">
+      <element id="module-output" name="WebServer" />
+    </root>
+  </artifact>
+</component>
