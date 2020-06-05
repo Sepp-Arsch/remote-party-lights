@@ -44,11 +44,11 @@
   <h1>Favorite colors</h1>
 
 
-  <!-- Optional JavaScript -->
+  <!-- Optional JavaScript
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@jaames/iro"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@jaames/iro"></script> -->
 
 
 
@@ -84,7 +84,7 @@
   </script>
 
     <script type="text/javascript">
-    testFunction = function(){
+    testFunction = function(cmd){
     	var xhr = new XMLHttpRequest();
 		var url = "/";
 		xhr.open("POST", url, true);
@@ -95,11 +95,11 @@
 		        console.log(json);
 		    }
 		};
-		var data = JSON.stringify({"CMD": "PORTS"});
+		var data = JSON.stringify({"CMD": cmd});
 		xhr.send(data);
     };
-    testFunction(); // very first POST request has no data ... so let it run empty
-    testFunction();
+    testFunction("PING"); // very first POST request has no data ... so let it run empty
+    testFunction("PORTS");
 
     testFunction2 = function(){
     	var xhr = new XMLHttpRequest();
@@ -116,7 +116,7 @@
 		xhr.send(data);
     };
 
-    testFunction2 = function(){
+    testFunction3 = function(){
     	var xhr = new XMLHttpRequest();
 		var url = "/";
 		xhr.open("POST", url, true);
@@ -127,7 +127,12 @@
 		        console.log(json);
 		    }
 		};
-		var data = JSON.stringify({"CMD": "STATUS"});
+		var data = JSON.stringify({"CMD": "SETSERIAL",
+			"DELAY":"100",
+			"BAUDRATE":"10000",
+			"DATABITS":"10",
+			"STOPBITS":"2",
+			"PARITY":"1"});
 		xhr.send(data);
     };
   </script>
