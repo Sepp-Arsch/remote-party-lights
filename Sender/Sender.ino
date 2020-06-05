@@ -2,8 +2,8 @@
 
 RCSwitch Sender = RCSwitch();
 
-int SerialData = 0;
-int SendeCode = 0;
+long SerialData = 0;
+long SendeCode = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -13,7 +13,7 @@ void setup() {
 }
 
 void loop() {
-  int tempSerialData = Serial.parseInt();
+  long tempSerialData = Serial.parseInt();
   if (tempSerialData > 0) {
     SerialData = tempSerialData;
   }
