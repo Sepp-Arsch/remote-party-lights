@@ -1,12 +1,14 @@
+import handler.JsonHandler;
+import handler.SerialHandler;
+
 import java.awt.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
 import java.util.Date;
-import java.util.StringTokenizer;
 
-public class RunPartyWebServer implements Runnable{
+public class RunWebServer implements Runnable {
     static final File WEB_ROOT = new File(".");
     static final String DEFAULT_FILE = "index.html";
 
@@ -19,14 +21,20 @@ public class RunPartyWebServer implements Runnable{
     // Client Connection via Socket Class
     private Socket connect;
 
-    public RunPartyWebServer(Socket c) {
+    // Controlling the following handlers
+    private JsonHandler jsonHandler;
+    private SerialHandler serialHandler;
+
+    public RunWebServer(Socket c) {
         connect = c;
+        jsonHandler = new JsonHandler();
+        serialHandler = new SerialHandler();
     }
 
     public static void main(String[] args) {
         try {
             ServerSocket serverConnect = new ServerSocket(PORT);
-            System.out.println("Server started. Listening for connections on port : " + PORT + " ...\n");
+            System.out.println("Server started. Listening for connections on port : " + PORT + "...\n");
 
             // open browser on hosted page
             try {
@@ -37,7 +45,7 @@ public class RunPartyWebServer implements Runnable{
 
             // create dedicated thread to manage the client connection
             while (true) {
-                RunPartyWebServer myServer = new RunPartyWebServer(serverConnect.accept());
+                RunWebServer myServer = new RunWebServer(serverConnect.accept());
 
                 if (verbose)
                     System.out.println("Connection opened. (" + new Date() + ")");
@@ -52,25 +60,34 @@ public class RunPartyWebServer implements Runnable{
 
     @Override
     public void run() {
-        BufferedReader in = null; PrintWriter out = null; BufferedOutputStream dataOut = null;
+        InputStream in = null;
+        PrintWriter out = null;
+        BufferedOutputStream dataOut = null;
         String fileRequested = null;
 
         try {
-            in = new BufferedReader(new InputStreamReader(connect.getInputStream()));
+            in = connect.getInputStream();
+            System.err.println();
             out = new PrintWriter(connect.getOutputStream());
             dataOut = new BufferedOutputStream(connect.getOutputStream());
 
-            String input = in.readLine();
-            StringTokenizer parse = new StringTokenizer(input);
-            String method = parse.nextToken().toUpperCase(); // we get the HTTP method of the client
-            fileRequested = parse.nextToken().toLowerCase();
+            byte[] buffer = new byte[6000]; // hard coded to maximum HTTP payload of 6kb
+            in.read(buffer);
+            String input = new String(buffer, "UTF-8");
+
+            if (input.isEmpty())
+                return;
+
+            String[] inputLines = input.split(System.lineSeparator());
+            String httpHead = inputLines[0];
+            String method = httpHead.split(" ")[0].toUpperCase();
+            fileRequested = httpHead.split(" ")[1].toLowerCase();
 
             // we support only GET and HEAD methods, we check
-            if (!method.equals("GET")  &&  !method.equals("HEAD")) {
+            if (!method.equals("GET") && !method.equals("POST")) {
                 if (verbose)
                     System.out.println("501 Not Implemented : " + method + " method.");
-            } else {
-                // GET or HEAD method
+            } else if (method.equals("GET")) {
                 if (fileRequested.endsWith("/"))
                     fileRequested += DEFAULT_FILE;
 
@@ -78,24 +95,30 @@ public class RunPartyWebServer implements Runnable{
                 int fileLength = (int) file.length();
                 String content = getContentType(fileRequested);
 
-                if (method.equals("GET")) { // GET method so we return content
-                    byte[] fileData = readFileData(file, fileLength);
+                // GET method so we return content
+                byte[] fileData = readFileData(file, fileLength);
 
-                    // send HTTP Headers
-                    out.println("HTTP/1.1 200 OK");
-                    out.println("Server: Java HTTP Server from SSaurel : 1.0");
-                    out.println("Date: " + new Date());
-                    out.println("Content-type: " + content);
-                    out.println("Content-length: " + fileLength);
-                    out.println(); // blank line between headers and content, very important!
-                    out.flush(); // flush character output stream buffer
+                // send HTTP Headers
+                out.println("HTTP/1.1 200 OK");
+                out.println("Server: Java HTTP Party Lights Server");
+                out.println("Date: " + new Date());
+                out.println("Content-type: " + content);
+                out.println("Content-length: " + fileLength);
+                out.println(); // blank line between headers and content, very important!
+                out.flush(); // flush character output stream buffer
 
-                    dataOut.write(fileData, 0, fileLength);
-                    dataOut.flush();
-                }
+                dataOut.write(fileData, 0, fileLength);
+                dataOut.flush();
 
                 if (verbose)
-                    System.out.println("File " + fileRequested + " of type " + content + " returned");
+                    System.out.println("File " + fileRequested);
+            } else if (method.equals("POST")) {
+                String jsonData = inputLines[inputLines.length - 1];
+                out.println(jsonHandler.handle(jsonData));
+                out.flush();
+
+                if (verbose)
+                    System.out.println("Responded to POST request");
             }
 
         } catch (FileNotFoundException fnfe) {
@@ -135,7 +158,7 @@ public class RunPartyWebServer implements Runnable{
 
     // return supported MIME Types
     private String getContentType(String fileRequested) {
-        if (fileRequested.endsWith(".htm")  ||  fileRequested.endsWith(".html"))
+        if (fileRequested.endsWith(".htm") || fileRequested.endsWith(".html"))
             return "text/html";
         else
             return "text/plain";
