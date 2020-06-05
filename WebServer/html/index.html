@@ -45,67 +45,12 @@
 
 
   <!-- JavaScript -->
-  <script src="js/jquery-3.5.1.slim.min.js"></script>
+  <script src="js/jquery-3.3.1.min.js"></script>
   <script src="js/popper.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/iro.js"></script>
 
   <script src="js/rpl.colorwheel.js"></script>
   <script src="js/rpl.ajax.js"></script>
-
-
-    <script type="text/javascript">
-    testFunction = function(cmd){
-    	var xhr = new XMLHttpRequest();
-		var url = "/";
-		xhr.open("POST", url, true);
-		xhr.setRequestHeader("Content-Type", "application/json");
-		xhr.onreadystatechange = function () {
-		    if (xhr.readyState === 4 && xhr.status === 200) {
-		        var json = JSON.parse(xhr.responseText);
-		        console.log(json);
-		    }
-		};
-		var data = JSON.stringify({"CMD": cmd});
-		xhr.send(data);
-    };
-    testFunction("PING"); // very first POST request has no data ... so let it run empty
-    testFunction("PORTS");
-
-    testFunction2 = function(){
-    	var xhr = new XMLHttpRequest();
-		var url = "/";
-		xhr.open("POST", url, true);
-		xhr.setRequestHeader("Content-Type", "application/json");
-		xhr.onreadystatechange = function () {
-		    if (xhr.readyState === 4 && xhr.status === 200) {
-		        var json = JSON.parse(xhr.responseText);
-		        console.log(json);
-		    }
-		};
-		var data = JSON.stringify({"CMD": "CONNECT", "PORT": "COM3"});
-		xhr.send(data);
-    };
-
-    testFunction3 = function(){
-    	var xhr = new XMLHttpRequest();
-		var url = "/";
-		xhr.open("POST", url, true);
-		xhr.setRequestHeader("Content-Type", "application/json");
-		xhr.onreadystatechange = function () {
-		    if (xhr.readyState === 4 && xhr.status === 200) {
-		        var json = JSON.parse(xhr.responseText);
-		        console.log(json);
-		    }
-		};
-		var data = JSON.stringify({"CMD": "SETSERIAL",
-			"DELAY":"100",
-			"BAUDRATE":"10000",
-			"DATABITS":"10",
-			"STOPBITS":"2",
-			"PARITY":"1"});
-		xhr.send(data);
-    };
-  </script>
 </body>
 </html>
