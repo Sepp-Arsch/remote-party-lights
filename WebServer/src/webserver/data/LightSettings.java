@@ -26,18 +26,4 @@ public class LightSettings {
     public Color color = new Color(255, 255, 255, 255);
     public MODE mode = MODE.CONTINUOUS;
     public int interval = 0; // must be between 0-99
-
-    public int encode() {
-        int fourthParameter = mode == MODE.CONTINUOUS || mode == MODE.COLOR ?
-                map(color.getTransparency()) : interval;
-        return (int) (mode.value * Math.pow(10, 8)
-                + map(color.getRed()) * Math.pow(10, 6)
-                + map(color.getGreen()) * Math.pow(10, 4)
-                + map(color.getBlue()) * Math.pow(10, 2)
-                + fourthParameter);
-    }
-
-    private int map(int x) {
-        return x * 99 / 255;
-    }
 }

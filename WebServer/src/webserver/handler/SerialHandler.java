@@ -37,9 +37,9 @@ public class SerialHandler implements Runnable {
         return serialPort.openPort();
     }
 
-    public synchronized void setSerialSettings(SerialSettings serialSettings) {
-        this.serialSettings = serialSettings;
-    }
+//    public synchronized void setSerialSettings(SerialSettings serialSettings) {
+//        this.serialSettings = serialSettings;
+//    }
 
     public synchronized SerialSettings getSerialSettings() {
         return this.serialSettings;
@@ -55,9 +55,9 @@ public class SerialHandler implements Runnable {
         return serialPort.closePort();
     }
 
-    public synchronized void setLightSettings(LightSettings lightSettings) {
-        this.lightSettings = lightSettings;
-    }
+//    public synchronized void setLightSettings(LightSettings lightSettings) {
+//        this.lightSettings = lightSettings;
+//    }
 
     public synchronized LightSettings getLightSettings() {
         return this.lightSettings;
@@ -71,13 +71,29 @@ public class SerialHandler implements Runnable {
         return list;
     }
 
+
+    private int encode(LightSettings lightSettings) {
+        int fourthParameter = lightSettings.mode == LightSettings.MODE.CONTINUOUS
+                || lightSettings.mode == LightSettings.MODE.COLOR ?
+                map(lightSettings.color.getTransparency()) : lightSettings.interval;
+        return (int) (lightSettings.mode.value * Math.pow(10, 8)
+                + map(lightSettings.color.getRed()) * Math.pow(10, 6)
+                + map(lightSettings.color.getGreen()) * Math.pow(10, 4)
+                + map(lightSettings.color.getBlue()) * Math.pow(10, 2)
+                + fourthParameter);
+    }
+
+    private int map(int x) {
+        return x * 99 / 255;
+    }
+
     @Override
     public void run() {
         while(true) {
             try {
-                // Send active LightCode to Arduino
+                // Send current LightSettings to Arduino every *delay* ms
                 if (serialPort != null && serialPort.isOpen() && lightSettings != null) {
-                    serialPort.getOutputStream().write(lightSettings.encode());
+                    serialPort.getOutputStream().write(encode(lightSettings));
                     serialPort.getOutputStream().flush();
                 }
 
