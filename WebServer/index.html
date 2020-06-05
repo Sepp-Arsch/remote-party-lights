@@ -85,24 +85,18 @@
 
 
 
-    const SerialPort = require('serialport')
-const port = new SerialPort('/dev/tty-usbserial1', { autoOpen: false })
-
-port.open(function (err) {
-  if (err) {
-    return console.log('Error opening port: ', err.message)
-  }
-
-  // Because there's no callback to write, write errors will be emitted on the port:
-  port.write('main screen turn on')
-})
-
-// The open event is always emitted
-port.on('open', function() {
-  // open logic
-})
-
-port.write('Hi Mom!')
+ //    var xhr = new XMLHttpRequest();
+	// var url = "url";
+	// xhr.open("POST", url, true);
+	// xhr.setRequestHeader("Content-Type", "application/json");
+	// xhr.onreadystatechange = function () {
+	//     if (xhr.readyState === 4 && xhr.status === 200) {
+	//         var json = JSON.parse(xhr.responseText);
+	//         console.log(json.email + ", " + json.password);
+	//     }
+	// };
+	// var data = JSON.stringify({"email": "hey@mail.com", "password": "101010"});
+	// xhr.send(data);
   </script>
 </body>
 </html>
