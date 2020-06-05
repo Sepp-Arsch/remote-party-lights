@@ -13,4 +13,8 @@ test = function(data) {
 }
 
 send({"CMD":"PORTS"}, test);
+send({"CMD":"GETLIGHT"}, test);
+send({"CMD":"GETSERIAL"}, test);
+send({"CMD":"DISCONNECT"}, test);
+send({"CMD":"STATUS"}, test);
 

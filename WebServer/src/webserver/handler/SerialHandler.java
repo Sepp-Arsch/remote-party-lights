@@ -52,6 +52,8 @@ public class SerialHandler implements Runnable {
     }
 
     public synchronized boolean disconnect() {
+        if (serialPort == null)
+            return false;
         return serialPort.closePort();
     }
 
