@@ -11,7 +11,7 @@
 <body>
   <h2>Arduino Party Lights</h2>
   <button type="button" class="btn btn-outline-primary">Calibrate</button>
-  <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">Connect</a>
+  <a href="#" onclick="testFunction()" class="btn btn-primary active" role="button" aria-pressed="true">Connect</a>
   <div class="row">
     <div class="col-lg-4">.col-lg-4</div>
     <div class="col-lg-4">.col-lg-4</div>
@@ -81,22 +81,23 @@
     colorWheel.on("color:change", function(color, changes){
       console.log(colorWheel.color.COLORFORMAT);
     });
+  </script>
 
-
-
-
- //    var xhr = new XMLHttpRequest();
-	// var url = "url";
-	// xhr.open("POST", url, true);
-	// xhr.setRequestHeader("Content-Type", "application/json");
-	// xhr.onreadystatechange = function () {
-	//     if (xhr.readyState === 4 && xhr.status === 200) {
-	//         var json = JSON.parse(xhr.responseText);
-	//         console.log(json.email + ", " + json.password);
-	//     }
-	// };
-	// var data = JSON.stringify({"email": "hey@mail.com", "password": "101010"});
-	// xhr.send(data);
+    <script type="text/javascript">
+    testFunction = function(){
+    	var xhr = new XMLHttpRequest();
+		var url = "/";
+		xhr.open("POST", url, true);
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.onreadystatechange = function () {
+		    if (xhr.readyState === 4 && xhr.status === 200) {
+		        var json = JSON.parse(xhr.responseText);
+		        console.log(json);
+		    }
+		};
+		var data = JSON.stringify({"email": "A", "password": "B"});
+		xhr.send(data);
+    };
   </script>
 </body>
 </html>
