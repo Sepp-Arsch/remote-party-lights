@@ -1,5 +1,7 @@
 package webserver;
 
+import webserver.data.LightSettings;
+import webserver.data.SerialSettings;
 import webserver.handler.JsonHandler;
 import webserver.handler.SerialHandler;
 
@@ -9,32 +11,31 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
 import java.util.Date;
+import java.util.List;
 
 public class RunWebServer implements Runnable {
     static final File WEB_ROOT = new File(".");
     static final String DEFAULT_FILE = "index.html";
 
-    // port to listen connection
     static final int PORT = 80;
-
-    // verbose mode
+    static final SerialHandler serialHandler = SerialHandler.getInstance();
     static final boolean verbose = true;
 
-    // Client Connection via Socket Class
     private Socket connect;
-
-    // Controlling the following handlers
     private JsonHandler jsonHandler;
-    private SerialHandler serialHandler;
 
     public RunWebServer(Socket c) {
         connect = c;
         jsonHandler = new JsonHandler();
-        serialHandler = SerialHandler.getInstance();
     }
 
     public static void main(String[] args) {
         try {
+            // launch serial handler (singleton)
+            Thread serialThread = new Thread(serialHandler);
+            serialThread.start();
+
+            // launch web server
             ServerSocket serverConnect = new ServerSocket(PORT);
             System.out.println("Server started. Listening for connections on port : " + PORT + "...\n");
 
@@ -147,8 +148,36 @@ public class RunWebServer implements Runnable {
         }
     }
 
-    public void testA() {
-        System.err.println("test");
+    public boolean connectSerialPort(String port) {
+        return serialHandler.connect(port);
+    }
+
+    public boolean disconnectSerialPort() {
+        return serialHandler.disconnect();
+    }
+
+    public String getSerialStatus() {
+        return serialHandler.getStatus();
+    }
+
+    public List<String> getAvailableSerialPorts() {
+        return serialHandler.getAvailablePorts();
+    }
+
+    public void setSerialSettings(SerialSettings serialSettings) {
+        serialHandler.setSerialSettings(serialSettings);
+    }
+
+    public SerialSettings getSerialSettings() {
+        return serialHandler.getSerialSettings();
+    }
+
+    public void setLightSettings(LightSettings lightSettings) {
+        serialHandler.setLightSettings(lightSettings);
+    }
+
+    public LightSettings getLightSettings() {
+        return serialHandler.getLightSettings();
     }
 
     private byte[] readFileData(File file, int fileLength) throws IOException {

@@ -16,7 +16,7 @@ public class JsonHandler{
     }
 
     public String handle(String json) {
-        server.testA();
+        //server.testA();
         return "{}";
     }
 }
