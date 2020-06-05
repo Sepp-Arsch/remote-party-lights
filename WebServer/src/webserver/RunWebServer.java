@@ -205,6 +205,8 @@ public class RunWebServer implements Runnable {
     private String getContentType(String fileRequested) {
         if (fileRequested.endsWith(".htm") || fileRequested.endsWith(".html"))
             return "text/html";
+        else if (fileRequested.endsWith(".css"))
+            return "text/css";
         else
             return "text/plain";
     }
