@@ -1,5 +1,7 @@
-import handler.JsonHandler;
-import handler.SerialHandler;
+package webserver;
+
+import webserver.handler.JsonHandler;
+import webserver.handler.SerialHandler;
 
 import java.awt.*;
 import java.io.*;
@@ -28,7 +30,7 @@ public class RunWebServer implements Runnable {
     public RunWebServer(Socket c) {
         connect = c;
         jsonHandler = new JsonHandler();
-        serialHandler = new SerialHandler();
+        serialHandler = SerialHandler.getInstance();
     }
 
     public static void main(String[] args) {
@@ -46,6 +48,7 @@ public class RunWebServer implements Runnable {
             // create dedicated thread to manage the client connection
             while (true) {
                 RunWebServer myServer = new RunWebServer(serverConnect.accept());
+                myServer.jsonHandler.setServer(myServer);
 
                 if (verbose)
                     System.out.println("Connection opened. (" + new Date() + ")");
@@ -114,11 +117,14 @@ public class RunWebServer implements Runnable {
                     System.out.println("File " + fileRequested);
             } else if (method.equals("POST")) {
                 String jsonData = inputLines[inputLines.length - 1];
-                out.println(jsonHandler.handle(jsonData));
+                String response = jsonHandler.handle(jsonData);
+                out.println(response);
                 out.flush();
 
-                if (verbose)
-                    System.out.println("Responded to POST request");
+                if (verbose) {
+                    System.out.println("Incoming POST request: " + jsonData);
+                    System.out.println("Outgoing POST response: " + response);
+                }
             }
 
         } catch (FileNotFoundException fnfe) {
@@ -131,7 +137,7 @@ public class RunWebServer implements Runnable {
                 in.close();
                 out.close();
                 dataOut.close();
-                connect.close(); // we close socket connection
+                connect.close();
             } catch (Exception e) {
                 System.err.println("Error closing stream : " + e.getMessage());
             }
@@ -139,6 +145,10 @@ public class RunWebServer implements Runnable {
             if (verbose)
                 System.out.println("Connection closed.\n");
         }
+    }
+
+    public void testA() {
+        System.err.println("test");
     }
 
     private byte[] readFileData(File file, int fileLength) throws IOException {

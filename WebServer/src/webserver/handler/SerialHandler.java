@@ -1,10 +1,28 @@
-package handler;
+package webserver.handler;
 
 import com.fazecast.jSerialComm.SerialPort;
 
 import java.io.IOException;
 
+/**
+ * Singleton
+ */
 public class SerialHandler {
+    private String port;
+
+    private static SerialHandler INSTANCE;
+
+    private SerialHandler() {
+    }
+
+    public synchronized static SerialHandler getInstance() {
+        if(INSTANCE == null)
+            INSTANCE = new SerialHandler();
+        return INSTANCE;
+    }
+
+
+
     public static void main(String[] args) throws IOException, InterruptedException {
         SerialPort[] a = SerialPort.getCommPorts();
         for (SerialPort i : a){
