@@ -14,7 +14,7 @@ import java.util.List;
 public class SerialHandler implements Runnable {
     private LightSettings lightSettings;
     private SerialSettings serialSettings;
-    private SerialPort serialPort;
+    private SerialPort serialPort = null;
 
     private static SerialHandler INSTANCE;
 
@@ -46,7 +46,7 @@ public class SerialHandler implements Runnable {
     }
 
     public synchronized String getStatus() {
-        if(serialPort.isOpen())
+        if(serialPort != null && serialPort.isOpen())
             return serialPort.getSystemPortName();
         return "DISCONNECTED";
     }
@@ -75,7 +75,7 @@ public class SerialHandler implements Runnable {
     private int encode(LightSettings lightSettings) {
         int fourthParameter = lightSettings.mode == LightSettings.MODE.CONTINUOUS
                 || lightSettings.mode == LightSettings.MODE.COLOR ?
-                map(lightSettings.color.getTransparency()) : lightSettings.interval;
+                map(lightSettings.color.getAlpha()) : lightSettings.interval;
         return (int) (lightSettings.mode.value * Math.pow(10, 8)
                 + map(lightSettings.color.getRed()) * Math.pow(10, 6)
                 + map(lightSettings.color.getGreen()) * Math.pow(10, 4)

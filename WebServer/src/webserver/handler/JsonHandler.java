@@ -23,7 +23,7 @@ public class JsonHandler{
         SETLIGHT,
         GETSERIAL,
         SETSERIAL,
-        STATUS;
+        STATUS
     }
 
     public String handle(String jsonString) {
@@ -45,7 +45,8 @@ public class JsonHandler{
 
             return jsonOut.toString();
         } catch (Exception e) {
-            return "{\"error\":\"could not parse received data\"}";
+            return "{\"error\":\"could not parse received data\", \"stacktrace\":\"" +
+                    e.getMessage() + "\"}";
         }
     }
 
@@ -67,15 +68,18 @@ public class JsonHandler{
         LightSettings lightSettings = server.getLightSettings();
         JSONObject obj = new JSONObject();
         obj.append("MODE", lightSettings.mode.toString());
-        obj.append("RGBA", lightSettings.color.toString());
+        obj.append("R", lightSettings.color.getRed());
+        obj.append("G", lightSettings.color.getGreen());
+        obj.append("B", lightSettings.color.getGreen());
+        obj.append("A", lightSettings.color.getAlpha());
         obj.append("INTERVAL", lightSettings.interval);
         out.append(CMD.GETLIGHT.toString(), obj);
     }
 
     private void setLight(JSONObject in, JSONObject out) {
         LightSettings lightSettings = server.getLightSettings();
-        lightSettings.color = new Color(in.getInt("RED"), in.getInt("GREEN"), in.getInt("BLUE"),
-                in.getInt("ALPHA"));
+        lightSettings.color = new Color(in.getInt("R"), in.getInt("G"), in.getInt("B"),
+                in.getInt("A"));
         lightSettings.mode = LightSettings.MODE.valueOf(in.getString("MODE"));
         lightSettings.interval = in.getInt("INTERVAL");
 

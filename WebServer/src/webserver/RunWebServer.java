@@ -77,13 +77,19 @@ public class RunWebServer implements Runnable {
 
             byte[] buffer = new byte[6000]; // hard coded to maximum HTTP payload of 6kb
             in.read(buffer);
-            String input = new String(buffer, "UTF-8");
+            String input = new String(buffer, "UTF-8").trim();
 
-            if (input.isEmpty())
+            if (input.isEmpty()) {
+                if (verbose)
+                    System.out.println("EMPTY HEAD");
                 return;
+            }
 
             String[] inputLines = input.split(System.lineSeparator());
             String httpHead = inputLines[0];
+
+            if (verbose)
+                System.out.println("HEAD: " + httpHead);
             String method = httpHead.split(" ")[0].toUpperCase();
             fileRequested = httpHead.split(" ")[1].toLowerCase();
 
