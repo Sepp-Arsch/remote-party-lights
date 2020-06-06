@@ -9,7 +9,7 @@ public class SerialSettings {
     public final boolean onlySendOnChanges;
 
     public SerialSettings() {
-            this(1000, 9600, 8, 1, 0, false);
+            this(1000, 9600, 8, 1, 0, true  );
     }
 
     public SerialSettings(int delay, int baudRate, int dataBits, int stopBits, int parity, boolean onlySendOnChanges) {

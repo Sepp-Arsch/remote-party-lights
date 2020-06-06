@@ -19,7 +19,7 @@ public class RunWebServer implements Runnable {
 
     static final int PORT = 80;
     static final SerialHandler serialHandler = SerialHandler.getInstance();
-    static final boolean verbose = true;
+    public static boolean verbose;
 
     private Socket connect;
     private JsonHandler jsonHandler;
@@ -30,6 +30,7 @@ public class RunWebServer implements Runnable {
     }
 
     public static void main(String[] args) {
+        verbose = args.length > 0;
         try {
             // launch serial handler (singleton)
             Thread serialThread = new Thread(serialHandler);
@@ -71,7 +72,6 @@ public class RunWebServer implements Runnable {
 
         try {
             in = connect.getInputStream();
-            System.err.println();
             out = new PrintWriter(connect.getOutputStream());
             dataOut = new BufferedOutputStream(connect.getOutputStream());
 

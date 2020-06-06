@@ -106,8 +106,10 @@ public class SerialHandler implements Runnable {
 
                 // Send current LightSettings to Arduino every *delay* ms
                 if (serialPort != null && serialPort.isOpen() && lightSettings != null) {
+                    System.out.println("Sending " + encode(lightSettings)
+                            + " via serial port " + serialPort.getSystemPortName());
+
                     this.lightSettingsChanges = false;
-                    System.out.println("Sending serial: " + encode(lightSettings));
                     serialPort.getOutputStream().write(encode(lightSettings).getBytes());
                     serialPort.getOutputStream().flush();
                 }

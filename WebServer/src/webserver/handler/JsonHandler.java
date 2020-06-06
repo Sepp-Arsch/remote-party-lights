@@ -21,7 +21,6 @@ public class JsonHandler {
     public String handle(String jsonString) {
         try {
             JSONObject jsonIn = new JSONObject(jsonString);
-
             Object cmds = jsonIn.get(cmdKey);
             JSONArray cmdsArray;
             if (cmds instanceof JSONArray)
@@ -86,7 +85,7 @@ public class JsonHandler {
         obj.put("MODE", lightSettings.mode.toString());
         obj.put("R", lightSettings.color.getRed());
         obj.put("G", lightSettings.color.getGreen());
-        obj.put("B", lightSettings.color.getGreen());
+        obj.put("B", lightSettings.color.getBlue());
         obj.put("A", lightSettings.color.getAlpha());
         obj.put("INTERVAL", lightSettings.interval);
         out.put(CMD.GETLIGHT.toString(), obj);

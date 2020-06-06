@@ -23,7 +23,7 @@ public class LightSettings {
         if (obj == null || obj.getClass() != this.getClass())
             return false;
         LightSettings lsObj = (LightSettings) obj;
-        return (lsObj.mode == this.mode && lsObj.color == this.color && lsObj.interval == this.interval);
+        return (lsObj.mode == this.mode && lsObj.color.equals(this.color) && lsObj.interval == this.interval);
     }
 
     public enum MODE {
