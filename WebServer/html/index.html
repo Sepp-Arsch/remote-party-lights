@@ -8,40 +8,125 @@
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <title>Arduino Party Lights</title>
 </head>
-<body>
+<body style="padding: 30px;">
   <h2>Arduino Party Lights</h2>
-  <button type="button" class="btn btn-outline-primary">Calibrate</button>
-  <a href="#" onclick="testFunction()" class="btn btn-primary active" role="button" aria-pressed="true">Connect</a>
+
+  <div class="row">
+    <div class="col-lg-4">
+        <div class="card">
+          <div class="card-body" id="panel-server-response"> </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+      <button type="button" class="btn btn-outline-primary" id="btn-status">Status</button>
+      <button type="button" class="btn btn-outline-primary" id="btn-connect">Connect</button>
+      <button type="button" class="btn btn-outline-primary" id="btn-disconnect">Disconnect</button>
+      <button type="button" class="btn btn-outline-primary" id="btn-ports">Ports</button>
+      <button type="button" class="btn btn-outline-primary" id="btn-get-lights">Get Lights</button>
+      <button type="button" class="btn btn-outline-primary" id="btn-set-lights">Set Lights</button>
+      <button type="button" class="btn btn-outline-primary" id="btn-get-serial">Get Serial</button>
+      <button type="button" class="btn btn-outline-primary" id="btn-set-serial">Set Serial</button>
+    </div>
+    <div class="col-lg-4">
+      <div class="input-group col-sm-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">PORT</span>
+        </div>
+        <input type="text" class="form-control" id="form-port">
+      </div>
+      <div class="input-group col-sm-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">RED</span>
+        </div>
+        <input type="number" class="form-control" id="form-red">
+      </div>
+      <div class="input-group col-sm-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">GREEN</span>
+        </div>
+        <input type="number" class="form-control" id="form-green">
+      </div>
+      <div class="input-group col-sm-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">BLUE</span>
+        </div>
+        <input type="number" class="form-control" id="form-blue">
+      </div>
+      <div class="input-group col-sm-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">ALPHA</span>
+        </div>
+        <input type="number" class="form-control" id="form-alpha">
+      </div>
+      <div class="input-group col-sm-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">INTERVAL</span>
+        </div>
+        <input type="number" class="form-control" id="form-interval">
+      </div>
+      <div class="input-group col-sm-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">MODE</span>
+        </div>
+        <input type="text" class="form-control" id="form-mode">
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-4">
+      <div class="input-group col-sm-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">DELAY</span>
+        </div>
+        <input type="number" class="form-control" id="form-delay">
+      </div>
+      <div class="input-group col-sm-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">BAUDRATE</span>
+        </div>
+        <input type="number" class="form-control" id="form-baudrate">
+      </div>
+      <div class="input-group col-sm-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">DATABITS</span>
+        </div>
+        <input type="number" class="form-control" id="form-databits">
+      </div>
+      <div class="input-group col-sm-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">STOPBITS</span>
+        </div>
+        <input type="number" class="form-control" id="form-stopbits">
+      </div>
+      <div class="input-group col-sm-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">PARITY</span>
+        </div>
+        <input type="number" class="form-control" id="form-parity">
+      </div>
+      <div class="custom-control custom-checkbox col-sm-4">
+        <input type="checkbox" class="custom-control-input" id="check-onlysendonchange">
+        <label class="custom-control-label" for="check-onlysendonchange">Web Server -Serial-> Arduino only when there are changes</label>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
   baudrate* (* = requires reconnect)
   <a href="#" onclick="testFunction()" class="btn btn-primary active" role="button" aria-pressed="true">SERIAL SEETINGS SAVE AND RECONNECT</a>
-  <div class="row">
-    <div class="col-lg-4">.col-lg-4</div>
-    <div class="col-lg-4">.col-lg-4</div>
-    <div class="col-lg-4">.col-lg-4</div>
-  </div>
-  <div class="btn-group-toggle" data-toggle="buttons">
-    <label class="btn btn-secondary active">
-      <input type="checkbox" checked> Checked
-    </label>
-  </div>
-  $().button("toggle")
-  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-    <label class="btn btn-secondary active">
-      <input type="radio" name="options" id="option1" checked> Active
-    </label>
-    <label class="btn btn-secondary">
-      <input type="radio" name="options" id="option2"> Radio
-    </label>
-    <label class="btn btn-secondary">
-      <input type="radio" name="options" id="option3"> Radio
-    </label>
-  </div>
-  <div class="input-group mb-3">
-    <div class="input-group-prepend">
-      <span class="input-group-text" id="basic-addon1">@</span>
-    </div>
-    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-  </div>
+
   <div class="wheel" id="colorWheel"></div>
   <h1>Favorite colors</h1>
 
