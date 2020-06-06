@@ -23,7 +23,8 @@ addModeLink = function(item, value) {
 // Visible data
 update = function() {
 	send({"CMD":["GETLIGHT", "GETSERIAL", "STATUS", "PORTS", "LISTOPTIONS"]}, function(data) {
-		$("#panel-server-response").html(JSON.stringify(data));
+		$("#panel-server-response").html("" + new Date(Number(new Date())) + " - "
+			+ JSON.stringify(data));
 
 		// status
 		$("#form-port").val(data.STATUS.PORT);
@@ -99,7 +100,8 @@ save = function() {
 		"PARITY":$("#form-parity").val(),
 		"ONLYSENDONCHANGE":$("#check-onlysendonchange").is(":checked")
 	}, function(data) {
-		$("#panel-server-response").html(JSON.stringify(data));
+		$("#panel-server-response").html("" + new Date(Number(new Date())) + " - "
+			+ JSON.stringify(data));
 	});
 };
 
@@ -126,3 +128,12 @@ $("#btn-noports").click(update);
 $("#btn-connect").click(connect);
 $("#btn-disconnect").click(disconnect);
 $("#btn-save").click(save);
+$("#check-save-delay").change(function() {
+    if(this.checked) {
+        $("#btn-save").prop('disabled', true);
+        window.setInterval(save, $("#form-save-delay").val());
+    } else {
+    	clearInterval();
+		$("#btn-save").prop('disabled', false);
+    }
+});	
