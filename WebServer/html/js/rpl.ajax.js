@@ -33,16 +33,14 @@ update = function() {
 				$("#btn-port-0").addClass('active');
 				$("#btn-disconnect").hide();
 				$("#btn-connect").show();
+				$("#btn-port-group").show();
 			}
 			else {
 				$("#btn-port-" + $.inArray(data.STATUS.PORT, data.PORTS)).addClass('active');
 				$("#btn-connect").hide();
+				$("#btn-port-group").hide();
 				$("#btn-disconnect").show();
 			}
-
-			//change connect to take this instead of forms'
-			$("#btn-port-group").show();
-
 		} else {
 			$("#btn-port-group").hide();
 			$("#btn-disconnect").hide();
