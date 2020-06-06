@@ -1,6 +1,5 @@
-#include <RCSwitch.h>
-
-RCSwitch Sender = RCSwitch();
+#include <LoRa.h>
+#include <SPI.h>
 
 unsigned long SerialData = 0;
 
@@ -16,19 +15,6 @@ void setup() {
   }
   
   Serial.setTimeout(100);
-
-  while (true) {
-    Serial.println("ROT");
-    LoRa.beginPacket();
-    LoRa.print(199000099);
-    LoRa.endPacket();
-    delay(1000);
-    Serial.println("BLAU");
-    LoRa.beginPacket();
-    LoRa.print(100990099);
-    LoRa.endPacket();
-    delay(1000);
-  }
 }
 
 void loop() {
