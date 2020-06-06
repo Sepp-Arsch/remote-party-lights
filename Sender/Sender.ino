@@ -1,15 +1,19 @@
-#include <RCSwitch.h>
-
-RCSwitch Sender = RCSwitch();
+#include <SPI.h>
+#include <LoRa.h>
 
 long SerialData = 0;
-long SendeCode = 0;
 
 void setup() {
   Serial.begin(9600);
+  while (!Serial);
+
+  Serial.println("LoRa Sender");
+  if (!LoRa.begin(433E6)) {
+    Serial.println("Starting LoRa failed!");
+    while (1);
+  }
+  
   Serial.setTimeout(25);
-  Sender.enableTransmit(9); // Transmitter is connected to Arduino Pin #9
-  Serial.println("Sender initialized...");
 }
 
 void loop() {
@@ -19,6 +23,9 @@ void loop() {
   }
 
   Serial.print("Sending: "); Serial.println(SerialData);
-  Sender.send(SerialData, 32);
+  LoRa.beginPacket();
+  LoRa.print(SerialData);
+  LoRa.endPacket();
+
   delay(100);
 }
