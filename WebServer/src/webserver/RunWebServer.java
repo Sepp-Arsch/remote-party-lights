@@ -170,17 +170,17 @@ public class RunWebServer implements Runnable {
         return serialHandler.getAvailablePorts();
     }
 
-//    public void setSerialSettings(SerialSettings serialSettings) {
-//        serialHandler.setSerialSettings(serialSettings);
-//    }
+    public void setSerialSettings(SerialSettings serialSettings) {
+        serialHandler.setSerialSettings(serialSettings);
+    }
 
     public SerialSettings getSerialSettings() {
         return serialHandler.getSerialSettings();
     }
 
-//    public void setLightSettings(LightSettings lightSettings) {
-//        serialHandler.setLightSettings(lightSettings);
-//    }
+    public void setLightSettings(LightSettings lightSettings) {
+        serialHandler.setLightSettings(lightSettings);
+    }
 
     public LightSettings getLightSettings() {
         return serialHandler.getLightSettings();

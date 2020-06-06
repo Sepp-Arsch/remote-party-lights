@@ -16,7 +16,9 @@ public class SerialHandler implements Runnable {
     private SerialSettings serialSettings;
     private SerialPort serialPort = null;
 
-    private static SerialHandler INSTANCE;
+    private boolean lightSettingsChanges = false;
+
+    private static volatile SerialHandler INSTANCE;
 
     private SerialHandler() {
         this.lightSettings = new LightSettings();
@@ -24,7 +26,7 @@ public class SerialHandler implements Runnable {
     }
 
     public synchronized static SerialHandler getInstance() {
-        if(INSTANCE == null)
+        if (INSTANCE == null)
             INSTANCE = new SerialHandler();
         return INSTANCE;
     }
@@ -37,16 +39,17 @@ public class SerialHandler implements Runnable {
         return serialPort.openPort();
     }
 
-//    public synchronized void setSerialSettings(SerialSettings serialSettings) {
-//        this.serialSettings = serialSettings;
-//    }
+    public synchronized void setSerialSettings(SerialSettings serialSettings) {
+        if (!this.serialSettings.equals(serialSettings))
+            this.serialSettings = serialSettings;
+    }
 
     public synchronized SerialSettings getSerialSettings() {
         return this.serialSettings;
     }
 
     public synchronized String getStatus() {
-        if(serialPort != null && serialPort.isOpen())
+        if (serialPort != null && serialPort.isOpen())
             return serialPort.getSystemPortName();
         return "DISCONNECTED";
     }
@@ -57,9 +60,12 @@ public class SerialHandler implements Runnable {
         return serialPort.closePort();
     }
 
-//    public synchronized void setLightSettings(LightSettings lightSettings) {
-//        this.lightSettings = lightSettings;
-//    }
+    public synchronized void setLightSettings(LightSettings lightSettings) {
+        if (!this.lightSettings.equals(lightSettings)) {
+            this.lightSettings = lightSettings;
+            this.lightSettingsChanges = true;
+        }
+    }
 
     public synchronized LightSettings getLightSettings() {
         return this.lightSettings;
@@ -72,7 +78,6 @@ public class SerialHandler implements Runnable {
             list.add(port.getSystemPortName());
         return list;
     }
-
 
     private int encode(LightSettings lightSettings) {
         int fourthParameter = lightSettings.mode == LightSettings.MODE.CONTINUOUS
@@ -91,8 +96,12 @@ public class SerialHandler implements Runnable {
 
     @Override
     public void run() {
-        while(true) {
+        while (true) {
             try {
+                // Do not send LightSettings if sending on change is activated but no change present
+                if (serialSettings.onlySendOnChanges && !this.lightSettingsChanges)
+                    continue;
+
                 // Send current LightSettings to Arduino every *delay* ms
                 if (serialPort != null && serialPort.isOpen() && lightSettings != null) {
                     serialPort.getOutputStream().write(encode(lightSettings));

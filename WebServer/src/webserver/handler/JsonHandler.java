@@ -75,12 +75,11 @@ public class JsonHandler{
     }
 
     private void setLight(JSONObject in, JSONObject out) {
-        LightSettings lightSettings = server.getLightSettings();
-        lightSettings.color = new Color(in.getInt("R"), in.getInt("G"), in.getInt("B"),
-                in.getInt("A"));
-        lightSettings.mode = LightSettings.MODE.valueOf(in.getString("MODE"));
-        lightSettings.interval = in.getInt("INTERVAL");
-
+        server.setLightSettings(new LightSettings(
+                new Color(in.getInt("R"), in.getInt("G"), in.getInt("B"),in.getInt("A")),
+                LightSettings.MODE.valueOf(in.getString("MODE")),
+                in.getInt("INTERVAL")
+        ));
         out.put(CMD.SETLIGHT.toString(), true);
     }
 
@@ -96,13 +95,14 @@ public class JsonHandler{
     }
 
     private void setSerial(JSONObject in, JSONObject out) {
-        SerialSettings serialSettings = server.getSerialSettings();
-        serialSettings.delay = in.getInt("DELAY");
-        serialSettings.baudRate = in.getInt("BAUDRATE");
-        serialSettings.dataBits = in.getInt("DATABITS");
-        serialSettings.stopBits = in.getInt("STOPBITS");
-        serialSettings.parity = in.getInt("PARITY");
-
+        server.setSerialSettings(new SerialSettings(
+                in.getInt("DELAY"),
+                in.getInt("BAUDRATE"),
+                in.getInt("DATABITS"),
+                in.getInt("STOPBITS"),
+                in.getInt("PARITY"),
+                in.getBoolean("ONLYSENDONCHANGE")
+        ));
         out.put(CMD.SETSERIAL.toString(), true);
     }
 

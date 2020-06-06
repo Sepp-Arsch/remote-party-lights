@@ -23,7 +23,27 @@ public class LightSettings {
         }
     }
 
-    public Color color = new Color(255, 255, 255, 255);
-    public MODE mode = MODE.CONTINUOUS;
-    public int interval = 0; // must be between 0-99
+    public final Color color;
+    public final MODE mode;
+    public final int interval; // must be between 0-99
+
+    public LightSettings() {
+        this(new Color(255, 255, 255, 255), MODE.CONTINUOUS, 0);
+    }
+
+    public LightSettings(Color color, MODE mode, int interval) {
+        this.color = color;
+        this.mode = mode;
+        this.interval = interval;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj)
+            return true;
+        if(obj == null || obj.getClass()!= this.getClass())
+            return false;
+        LightSettings lsObj = (LightSettings) obj;
+        return (lsObj.mode == this.mode && lsObj.color == this.color && lsObj.interval == this.interval);
+    }
 }
