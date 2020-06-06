@@ -25,5 +25,8 @@ var colorWheel = new iro.ColorPicker("#colorWheel", {
 });
 
 colorWheel.on("color:change", function(color, changes){
-  console.log(colorWheel.color.COLORFORMAT);
+  $("#form-red").val(colorWheel.color.rgba.r);
+  $("#form-green").val(colorWheel.color.rgba.g);
+  $("#form-blue").val(colorWheel.color.rgba.b);
+  $("#form-alpha").val(parseInt(colorWheel.color.rgba.a * 255));
 });
