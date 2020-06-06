@@ -1,7 +1,7 @@
 #include <LoRa.h>
 #include <SPI.h>
 
-unsigned long SerialData = 0;
+double SerialData = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -18,15 +18,13 @@ void setup() {
 }
 
 void loop() {
-  unsigned long tempSerialData = Serial.parseInt();
-  if (tempSerialData > 0) {
-    SerialData = tempSerialData;
+  SerialData = Serial.parseInt();
+  if (SerialData > 0) {
+    Serial.print("Sending: "); Serial.println(SerialData);
+    LoRa.beginPacket();
+    LoRa.print(SerialData);
+    LoRa.endPacket();
   }
 
-  Serial.print("Sending: "); Serial.println(SerialData);
-  LoRa.beginPacket();
-  LoRa.print(SerialData);
-  LoRa.endPacket();
-
-  delay(1000);
+  
 }
