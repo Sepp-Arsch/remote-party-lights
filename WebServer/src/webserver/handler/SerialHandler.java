@@ -78,14 +78,16 @@ public class SerialHandler implements Runnable {
     }
 
     private String encode(LightSettings lightSettings) {
-        int fourthParameter = lightSettings.mode == LightSettings.MODE.CONTINUOUS
+        long fourthParameter = lightSettings.mode == LightSettings.MODE.CONTINUOUS
                 || lightSettings.mode == LightSettings.MODE.COLOR ?
                 map(lightSettings.color.getAlpha()) : lightSettings.interval;
-        return (String) "" + (lightSettings.mode.value * Math.pow(10, 8)
+
+        long total = (int) (lightSettings.mode.value * Math.pow(10, 8)
                 + map(lightSettings.color.getRed()) * Math.pow(10, 6)
                 + map(lightSettings.color.getGreen()) * Math.pow(10, 4)
                 + map(lightSettings.color.getBlue()) * Math.pow(10, 2)
                 + fourthParameter);
+        return String.valueOf(total);
     }
 
     private int map(int x) {
@@ -105,8 +107,7 @@ public class SerialHandler implements Runnable {
                 // Send current LightSettings to Arduino every *delay* ms
                 if (serialPort != null && serialPort.isOpen() && lightSettings != null) {
                     this.lightSettingsChanges = false;
-
-                    System.err.println(encode(lightSettings));
+                    System.out.println("Serial: " + encode(lightSettings));
                     serialPort.getOutputStream().write(encode(lightSettings).getBytes());
                     serialPort.getOutputStream().flush();
                 }
