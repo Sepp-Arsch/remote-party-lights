@@ -13,6 +13,13 @@ addPortButton = function(item, value) {
 	$("#btn-port-group").append("<label class=\"btn btn-secondary\" id=\"btn-port-" + item + "\"><input type=\"radio\" name=\"options\" autocomplete=\"off\">" + value + "</label>");
 };
 
+addModeLink = function(item, value) {
+	$("#drop-mode").append("<a class=\"dropdown-item\" id=\"mode-" + item + "\" href=\"#\">" + value + "</a>");
+	$("#mode-" + item).click(function() {
+		$("#form-mode").val(value.toString());
+	});
+};
+
 // Visible data
 update = function() {
 	send({"CMD":["GETLIGHT", "GETSERIAL", "STATUS", "PORTS", "LISTOPTIONS"]}, function(data) {
@@ -20,10 +27,10 @@ update = function() {
 
 		// status
 		$("#form-port").val(data.STATUS.PORT);
+		$("#btn-port-group").empty();
 		if (data.PORTS.length > 0) {
 			$("#btn-noports").hide();
 			$("#btn-connect").prop('disabled', false);
-			$("#btn-port-group").empty();
 			$.each(data.PORTS, function(index, value) {
 				addPortButton(index, value);
 			});
@@ -56,6 +63,14 @@ update = function() {
 		$("#form-alpha").val(data.GETLIGHT.A);
 		$("#form-mode").val(data.GETLIGHT.MODE);
 		$("#form-interval").val(data.GETLIGHT.INTERVAL);
+
+		// light modes
+		$("#drop-mode").empty();
+		if (data.LISTOPTIONS.MODE.length > 0) {
+			$.each(data.LISTOPTIONS.MODE, function(index, value) {
+				addModeLink(index, value);
+			});
+		}
 
 		// serial
 		$("#form-delay").val(data.GETSERIAL.DELAY);
