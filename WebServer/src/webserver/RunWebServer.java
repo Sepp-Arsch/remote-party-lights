@@ -170,20 +170,20 @@ public class RunWebServer implements Runnable {
         return serialHandler.getAvailablePorts();
     }
 
-    public void setSerialSettings(SerialSettings serialSettings) {
-        serialHandler.setSerialSettings(serialSettings);
-    }
-
     public SerialSettings getSerialSettings() {
         return serialHandler.getSerialSettings();
     }
 
-    public void setLightSettings(LightSettings lightSettings) {
-        serialHandler.setLightSettings(lightSettings);
+    public void setSerialSettings(SerialSettings serialSettings) {
+        serialHandler.setSerialSettings(serialSettings);
     }
 
     public LightSettings getLightSettings() {
         return serialHandler.getLightSettings();
+    }
+
+    public void setLightSettings(LightSettings lightSettings) {
+        serialHandler.setLightSettings(lightSettings);
     }
 
     private byte[] readFileData(File file, int fileLength) throws IOException {

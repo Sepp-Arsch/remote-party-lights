@@ -1,6 +1,5 @@
 package webserver.handler;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import webserver.RunWebServer;
 import webserver.data.LightSettings;
@@ -8,22 +7,11 @@ import webserver.data.SerialSettings;
 
 import java.awt.*;
 
-public class JsonHandler{
+public class JsonHandler {
     private RunWebServer server;
 
     public void setServer(RunWebServer server) {
         this.server = server;
-    }
-
-    public enum CMD {
-        CONNECT,
-        DISCONNECT,
-        PORTS,
-        GETLIGHT,
-        SETLIGHT,
-        GETSERIAL,
-        SETSERIAL,
-        STATUS
     }
 
     public String handle(String jsonString) {
@@ -33,18 +21,34 @@ public class JsonHandler{
 
             JSONObject jsonOut = new JSONObject();
             switch (cmd) {
-                case CONNECT: connect(jsonIn, jsonOut); break;
-                case DISCONNECT: disconnect(jsonOut); break;
-                case STATUS: status(jsonOut); break;
-                case PORTS: ports(jsonOut); break;
-                case GETLIGHT: getLight(jsonOut); break;
-                case SETLIGHT: setLight(jsonIn, jsonOut); break;
-                case GETSERIAL: getSerial(jsonOut); break;
-                case SETSERIAL: setSerial(jsonIn, jsonOut); break;
+                case CONNECT:
+                    connect(jsonIn, jsonOut);
+                    break;
+                case DISCONNECT:
+                    disconnect(jsonOut);
+                    break;
+                case STATUS:
+                    status(jsonOut);
+                    break;
+                case PORTS:
+                    ports(jsonOut);
+                    break;
+                case GETLIGHT:
+                    getLight(jsonOut);
+                    break;
+                case SETLIGHT:
+                    setLight(jsonIn, jsonOut);
+                    break;
+                case GETSERIAL:
+                    getSerial(jsonOut);
+                    break;
+                case SETSERIAL:
+                    setSerial(jsonIn, jsonOut);
+                    break;
             }
 
             return jsonOut.toString();
-        } catch (Exception e) {
+        } catch (EnumConstantNotPresentException e) {
             return "{\"error\":\"could not parse received data\", \"stacktrace\":\"" +
                     e.getMessage() + "\"}";
         }
@@ -76,7 +80,7 @@ public class JsonHandler{
 
     private void setLight(JSONObject in, JSONObject out) {
         server.setLightSettings(new LightSettings(
-                new Color(in.getInt("R"), in.getInt("G"), in.getInt("B"),in.getInt("A")),
+                new Color(in.getInt("R"), in.getInt("G"), in.getInt("B"), in.getInt("A")),
                 LightSettings.MODE.valueOf(in.getString("MODE")),
                 in.getInt("INTERVAL")
         ));
@@ -110,5 +114,16 @@ public class JsonHandler{
         String serialStatus = server.getSerialStatus();
         out.put("PORT", serialStatus);
         out.put("CONNECTED", !serialStatus.equals("DISCONNECTED"));
+    }
+
+    public enum CMD {
+        CONNECT,
+        DISCONNECT,
+        PORTS,
+        GETLIGHT,
+        SETLIGHT,
+        GETSERIAL,
+        SETSERIAL,
+        STATUS
     }
 }

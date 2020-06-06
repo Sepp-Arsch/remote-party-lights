@@ -1,7 +1,5 @@
 package webserver.data;
 
-import java.awt.*;
-
 public class SerialSettings {
     public final int delay; // ms delay in Java Web Server -> Arduino Sender
     public final int baudRate;
@@ -25,9 +23,9 @@ public class SerialSettings {
 
     @Override
     public boolean equals(Object obj) {
-        if(this == obj)
+        if (this == obj)
             return true;
-        if(obj == null || obj.getClass()!= this.getClass())
+        if (obj == null || obj.getClass() != this.getClass())
             return false;
         SerialSettings ssObj = (SerialSettings) obj;
         return (ssObj.delay == this.delay && ssObj.baudRate == this.baudRate && ssObj.dataBits == this.dataBits

@@ -12,13 +12,11 @@ import java.util.List;
  * Singleton
  */
 public class SerialHandler implements Runnable {
+    private static volatile SerialHandler INSTANCE;
     private LightSettings lightSettings;
     private SerialSettings serialSettings;
     private SerialPort serialPort = null;
-
     private boolean lightSettingsChanges = false;
-
-    private static volatile SerialHandler INSTANCE;
 
     private SerialHandler() {
         this.lightSettings = new LightSettings();
@@ -39,13 +37,13 @@ public class SerialHandler implements Runnable {
         return serialPort.openPort();
     }
 
+    public synchronized SerialSettings getSerialSettings() {
+        return this.serialSettings;
+    }
+
     public synchronized void setSerialSettings(SerialSettings serialSettings) {
         if (!this.serialSettings.equals(serialSettings))
             this.serialSettings = serialSettings;
-    }
-
-    public synchronized SerialSettings getSerialSettings() {
-        return this.serialSettings;
     }
 
     public synchronized String getStatus() {
@@ -60,15 +58,15 @@ public class SerialHandler implements Runnable {
         return serialPort.closePort();
     }
 
+    public synchronized LightSettings getLightSettings() {
+        return this.lightSettings;
+    }
+
     public synchronized void setLightSettings(LightSettings lightSettings) {
         if (!this.lightSettings.equals(lightSettings)) {
             this.lightSettings = lightSettings;
             this.lightSettingsChanges = true;
         }
-    }
-
-    public synchronized LightSettings getLightSettings() {
-        return this.lightSettings;
     }
 
     public synchronized List<String> getAvailablePorts() {
