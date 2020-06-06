@@ -8,29 +8,23 @@ send = function(data, successFunction){
 	});
 };
 
-// Data packets
-sendStatus = function() {
-	send({"CMD":"STATUS","CMD":"PORTS"}, function(data) {
+// Visible data
+update = function() {
+	send({"CMD":["GETLIGHT", "GETSERIAL", "STATUS","PORTS"]}, function(data) {
 		$("#panel-server-response").html(JSON.stringify(data));
-		$("#form-port").val(data.STATUS.PORT);
-	});
-};
 
-sendGetLight = function() {
-	send({"CMD":"GETLIGHT"}, function(data) {
-		$("#panel-server-response").html(JSON.stringify(data));
+		// status
+		$("#form-port").val(data.STATUS.PORT);
+
+		// light
 		$("#form-red").val(data.GETLIGHT.R);
 		$("#form-green").val(data.GETLIGHT.G);
 		$("#form-blue").val(data.GETLIGHT.B);
 		$("#form-alpha").val(data.GETLIGHT.A);
 		$("#form-mode").val(data.GETLIGHT.MODE);
 		$("#form-interval").val(data.GETLIGHT.INTERVAL);
-	});
-};
 
-sendGetSerial = function() {
-	send({"CMD":"GETSERIAL"}, function(data) {
-		$("#panel-server-response").html(JSON.stringify(data));
+		// serial
 		$("#form-delay").val(data.GETSERIAL.DELAY);
 		$("#form-baudrate").val(data.GETSERIAL.BAUDRATE);
 		$("#form-databits").val(data.GETSERIAL.DATABITS);
@@ -39,61 +33,17 @@ sendGetSerial = function() {
 		$("#check-onlysendonchange").prop("checked", data.GETSERIAL.ONLYSENDONCHANGE);
 	});
 };
+update();
 
-sendPorts = function() {
-	send({"CMD":"PORTS"}, function(data) {
-		$("#panel-server-response").html(JSON.stringify(data));
-	});
-};
-
-// Visible data
-updateAll = function() {
-	$.when().
-	then(sendGetLight).
-	then(sendGetSerial).
-	then(sendStatus).
-	then(sendPorts);
-};
-//updateAll();
-
-// Button functionality
-$("#btn-status").click(sendStatus);
-
-$("#btn-connect").click(function() {
-	send({"CMD":"CONNECT", "PORT": $("#form-port").val()}, function(data) {
-		sendStatus();
-	});
-});
-
-$("#btn-disconnect").click(function() {
-	send({"CMD":"DISCONNECT"}, function(data) {
-		sendStatus();
-	});
-});
-
-$("#btn-ports").click(sendPorts);
-
-$("#btn-get-light").click(sendGetLight);
-
-$("#btn-set-light").click(function() {
+save = function() {
 	send({
-		"CMD":"SETLIGHT",
+		"CMD": ["SETLIGHT", "SETSERIAL"],
 		"R":$("#form-red").val(),
 		"G":$("#form-green").val(),
 		"B":$("#form-blue").val(),
 		"A":$("#form-alpha").val(),
 		"MODE":$("#form-mode").val(),
-		"INTERVAL":$("#form-interval").val()
-	}, function(data) {
-		$("#panel-server-response").html(JSON.stringify(data));
-	});
-});
-
-$("#btn-get-serial").click(sendGetSerial);
-
-$("#btn-set-serial").click(function() {
-	send({
-		"CMD":"SETSERIAL",
+		"INTERVAL":$("#form-interval").val(),
 		"DELAY":$("#form-delay").val(),
 		"BAUDRATE":$("#form-baudrate").val(),
 		"DATABITS":$("#form-databits").val(),
@@ -102,5 +52,21 @@ $("#btn-set-serial").click(function() {
 		"ONLYSENDONCHANGE":$("#check-onlysendonchange").is(":checked")
 	}, function(data) {
 		$("#panel-server-response").html(JSON.stringify(data));
+	});
+};
+
+// Button functionality
+$("#btn-update").click(update);
+$("#btn-save").click(save);
+
+$("#btn-connect").click(function() {
+	send({"CMD":"CONNECT", "PORT": $("#form-port").val()}, function(data) {
+		update();
+	});
+});
+
+$("#btn-disconnect").click(function() {
+	send({"CMD":"DISCONNECT"}, function(data) {
+		update();
 	});
 });
