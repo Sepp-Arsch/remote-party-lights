@@ -1,11 +1,16 @@
 // Data handling functions
-send = function(data, successFunction){
+send = function(data, successFunction) {
 	$.ajax({
 		type: "POST", url: "/", data: JSON.stringify(data),
 		contentType: "application/json; charset=utf-8", dataType: "json",
 		success: function(data){successFunction(data);},
 		failure: function(errMsg) {console.log(errMsg);}
 	});
+};
+
+// HTML functions
+addPortButton = function(item, value) {
+	$("#btn-port-group").append("<label class=\"btn btn-secondary\" id=\"btn-port-" + item + "\"><input type=\"radio\" name=\"options\" autocomplete=\"off\">" + value + "</label>");
 };
 
 // Visible data
@@ -15,6 +20,36 @@ update = function() {
 
 		// status
 		$("#form-port").val(data.STATUS.PORT);
+		if (data.PORTS.length > 0) {
+			$("#btn-noports").hide();
+			$("#btn-connect").prop('disabled', false);
+			$("#btn-port-group").empty();
+			$.each(data.PORTS, function(index, value) {
+				addPortButton(index, value);
+			});
+
+			//select first or active port
+			if (data.STATUS.PORT == "DISCONNECTED") {
+				$("#btn-port-0").addClass('active');
+				$("#btn-disconnect").hide();
+				$("#btn-connect").show();
+			}
+			else {
+				$("#btn-port-" + $.inArray(data.STATUS.PORT, data.PORTS)).addClass('active');
+				$("#btn-connect").hide();
+				$("#btn-disconnect").show();
+			}
+
+			//change connect to take this instead of forms'
+			$("#btn-port-group").show();
+
+		} else {
+			$("#btn-port-group").hide();
+			$("#btn-disconnect").hide();
+			$("#btn-connect").prop('disabled', true);
+			$("#btn-connect").show();
+			$("#btn-noports").show();
+		}		
 
 		// light
 		$("#form-red").val(data.GETLIGHT.R);
@@ -56,7 +91,12 @@ save = function() {
 };
 
 connect = function() {
-	send({"CMD":"CONNECT", "PORT": $("#form-port").val()}, function(data) {
+	var port = "";
+    $("#btn-port-group .active").each(function(){
+        port = $(this).text();
+    });
+
+	send({"CMD":"CONNECT", "PORT": port}, function(data) {
 		update();
 	});
 };
@@ -69,6 +109,7 @@ disconnect = function() {
 
 // Button functionality
 $("#btn-update").click(update);
+$("#btn-noports").click(update);
 $("#btn-connect").click(connect);
 $("#btn-disconnect").click(disconnect);
 $("#btn-save").click(save);

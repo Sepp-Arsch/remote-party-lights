@@ -17,25 +17,10 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-xs-12 col-md-6 mb-3">
-        <button type="button" class="btn btn-primary" id="btn-update"><img src="svg/download.svg" color="white"/> Update</button> <button type="button" class="btn btn-primary" id="btn-save"><img src="svg/upload.svg" color="white"/> Save</button>
-      </div>
       <div class="col-md-6 mb-3">
-        <div class="btn-group">
-          <button type="button" class="btn btn-primary disabled">Waitig for update...<img src="svg/play.svg" color="white"/> <img src="svg/stop-fill.svg" color="white"/></button>
-          <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Separated link</a>
-          </div>
+        <div class="mb-3">
+          <button type="button" class="btn btn-primary" id="btn-update"><img src="svg/download.svg" color="white"/> Update</button> <button type="button" class="btn btn-primary" id="btn-save"><img src="svg/upload.svg" color="white"/> Save</button>
         </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6 mb-3">
         <div class="wheel col-12 mb-3" id="colorWheel"></div>
         <div class="input-group mb-1">
           <div class="input-group-prepend">
@@ -80,6 +65,16 @@
         </div>
       </div>
       <div class="col-xs-12 col-md-6 mb-3">
+        <div class="mb-3">
+          <button type="button" class="btn btn-primary" id="btn-connect">Connect</button> <button type="button" class="btn btn-danger" id="btn-disconnect">Disconnect</button> 
+          <button type="button" class="btn btn-light" id="btn-noports">Update for ports...</button>
+
+          <div class="btn-group btn-group-toggle" data-toggle="buttons" id="btn-port-group" style="display: none;">
+            <label class="btn btn-secondary" id="option1a">
+              <input type="radio" name="options" autocomplete="off">Port 1
+            </label>
+          </div>
+        </div>
         <div class="input-group mb-1">
           <div class="input-group-prepend">
             <span class="input-group-text">Serial delay</span>
@@ -95,7 +90,7 @@
           <div class="input-group-prepend">
             <span class="input-group-text">Active Port*</span>
           </div>
-          <input type="text" class="form-control" id="form-port">
+          <input type="text" class="form-control" id="form-port" disabled>
         </div>
         <div class="input-group mb-1">
           <div class="input-group-prepend">
