@@ -96,17 +96,18 @@ public class SerialHandler implements Runnable {
     public void run() {
         while (true) {
             try {
+                Thread.sleep(serialSettings.delay);
+
                 // Do not send LightSettings if sending on change is activated but no change present
                 if (serialSettings.onlySendOnChanges && !this.lightSettingsChanges)
                     continue;
 
                 // Send current LightSettings to Arduino every *delay* ms
                 if (serialPort != null && serialPort.isOpen() && lightSettings != null) {
+                    this.lightSettingsChanges = false;
                     serialPort.getOutputStream().write(encode(lightSettings));
                     serialPort.getOutputStream().flush();
                 }
-
-                Thread.sleep(serialSettings.delay);
             } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
             }
