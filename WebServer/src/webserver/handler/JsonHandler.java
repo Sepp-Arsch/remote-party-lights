@@ -59,7 +59,7 @@ public class JsonHandler {
     }
 
     private void disconnect(JSONObject out) {
-        out.put(CMD.CONNECT.toString(), server.disconnectSerialPort());
+        out.put(CMD.DISCONNECT.toString(), server.disconnectSerialPort());
     }
 
     private void ports(JSONObject out) {
