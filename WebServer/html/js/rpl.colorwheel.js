@@ -24,9 +24,23 @@ var colorWheel = new iro.ColorPicker("#colorWheel", {
   ]
 });
 
-colorWheel.on("color:change", function(color, changes){
+colorWheel.on("input:change", function(color, changes){
   $("#form-red").val(colorWheel.color.rgba.r);
   $("#form-green").val(colorWheel.color.rgba.g);
   $("#form-blue").val(colorWheel.color.rgba.b);
   $("#form-alpha").val(parseInt(colorWheel.color.rgba.a * 255));
+});
+
+$("#form-red").change(function() {
+  colorWheel.color.setChannel("rgb", "r", $(this).val());
+});
+
+$("#form-green").change(function() {
+  colorWheel.color.setChannel("rgb", "g", $(this).val());
+});
+$("#form-blue").change(function() {
+  colorWheel.color.setChannel("rgb", "b", $(this).val());
+});
+$("#form-alpha").change(function() {
+  colorWheel.color.setChannel("rgb", "a", $(this).val() / 255);
 });
