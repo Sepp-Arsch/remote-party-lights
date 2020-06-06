@@ -39,12 +39,13 @@ update = function() {
 			//select first or active port
 			if (data.STATUS.PORT == "DISCONNECTED") {
 				$("#btn-port-0").addClass('active');
+				$("#btn-port-0").prop('disabled', true);
 				$("#btn-disconnect").hide();
 				$("#btn-connect").show();
 				$("#btn-port-group").show();
 			}
 			else {
-				$("#btn-port-" + $.inArray(data.STATUS.PORT, data.PORTS)).addClass('active');
+				$("#btn-port-" + $.inArray(data.STATUS.PORT, data.PORTS)).addClass('active').prop('disabled', true);
 				$("#btn-connect").hide();
 				$("#btn-port-group").hide();
 				$("#btn-disconnect").show();
@@ -64,6 +65,12 @@ update = function() {
 		$("#form-alpha").val(data.GETLIGHT.A);
 		$("#form-mode").val(data.GETLIGHT.MODE);
 		$("#form-interval").val(data.GETLIGHT.INTERVAL);
+
+		// colorwheel
+		colorWheel.color.setChannel("rgb", "r", data.GETLIGHT.R);
+		colorWheel.color.setChannel("rgb", "g", data.GETLIGHT.G);
+		colorWheel.color.setChannel("rgb", "b", data.GETLIGHT.B);
+		colorWheel.color.setChannel("rgb", "a", data.GETLIGHT.A / 255);
 
 		// light modes
 		$("#drop-mode").empty();
@@ -122,18 +129,20 @@ disconnect = function() {
 	});
 };
 
+autoSave = function() {
+	if($("#check-save-delay").is(":checked")) {
+        $("#btn-save").prop('disabled', true);
+        save();
+        setTimeout(autoSave, $("#form-save-delay").val());
+    } else {
+		$("#btn-save").prop('disabled', false);
+    }
+};
+
 // Button functionality
 $("#btn-update").click(update);
 $("#btn-noports").click(update);
 $("#btn-connect").click(connect);
 $("#btn-disconnect").click(disconnect);
 $("#btn-save").click(save);
-$("#check-save-delay").change(function() {
-    if(this.checked) {
-        $("#btn-save").prop('disabled', true);
-        window.setInterval(save, $("#form-save-delay").val());
-    } else {
-    	clearInterval();
-		$("#btn-save").prop('disabled', false);
-    }
-});	
+$("#check-save-delay").change(autoSave);	
