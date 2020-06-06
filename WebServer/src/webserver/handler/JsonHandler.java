@@ -28,13 +28,8 @@ public class JsonHandler {
                 cmdsArray = jsonIn.getJSONArray(cmdKey);
             else if (cmds instanceof String)
                 cmdsArray = new JSONArray().put(jsonIn.getString(cmdKey));
-            else {
-                StringBuilder sb = new StringBuilder("Unknown command, allowed commands are:");
-                for (CMD c : CMD.values())
-                    sb.append(" " + c.toString());
-                throw new JSONException(sb.toString());
-            }
-
+            else
+                throw new JSONException("Unknown command, query POST {\"CMD\":\"LISTOPTIONS\" for all commands.");
 
             JSONObject jsonOut = new JSONObject();
             for (Object cmd : cmdsArray) {
@@ -63,6 +58,8 @@ public class JsonHandler {
                     case SETSERIAL:
                         setSerial(jsonIn, jsonOut);
                         break;
+                    case LISTOPTIONS:
+                        listOptions(jsonOut);
                 }
             }
             return jsonOut.toString();
@@ -136,6 +133,22 @@ public class JsonHandler {
         out.put(CMD.STATUS.toString(), obj);
     }
 
+    private void listOptions(JSONObject out) {
+        JSONObject obj = new JSONObject();
+
+        JSONArray arr = new JSONArray();
+        for (CMD c : CMD.values())
+            arr.put(c.toString());
+        obj.put("CMD", arr);
+
+        JSONArray arrMode = new JSONArray();
+        for (LightSettings.MODE m : LightSettings.MODE.values())
+            arrMode.put(m.toString());
+        obj.put("MODE", arrMode);
+
+        out.put(CMD.LISTOPTIONS.toString(), obj);
+    }
+
     public enum CMD {
         CONNECT,
         DISCONNECT,
@@ -144,6 +157,7 @@ public class JsonHandler {
         SETLIGHT,
         GETSERIAL,
         SETSERIAL,
-        STATUS
+        STATUS,
+        LISTOPTIONS
     }
 }

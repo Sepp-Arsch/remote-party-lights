@@ -10,7 +10,7 @@ send = function(data, successFunction){
 
 // Visible data
 update = function() {
-	send({"CMD":["GETLIGHT", "GETSERIAL", "STATUS","PORTS"]}, function(data) {
+	send({"CMD":["GETLIGHT", "GETSERIAL", "STATUS", "PORTS", "LISTOPTIONS"]}, function(data) {
 		$("#panel-server-response").html(JSON.stringify(data));
 
 		// status
@@ -55,18 +55,20 @@ save = function() {
 	});
 };
 
-// Button functionality
-$("#btn-update").click(update);
-$("#btn-save").click(save);
-
-$("#btn-connect").click(function() {
+connect = function() {
 	send({"CMD":"CONNECT", "PORT": $("#form-port").val()}, function(data) {
 		update();
 	});
-});
+};
 
-$("#btn-disconnect").click(function() {
+disconnect = function() {
 	send({"CMD":"DISCONNECT"}, function(data) {
 		update();
 	});
-});
+};
+
+// Button functionality
+$("#btn-update").click(update);
+$("#btn-connect").click(connect);
+$("#btn-disconnect").click(disconnect);
+$("#btn-save").click(save);

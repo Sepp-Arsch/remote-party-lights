@@ -75,7 +75,7 @@ public class RunWebServer implements Runnable {
             out = new PrintWriter(connect.getOutputStream());
             dataOut = new BufferedOutputStream(connect.getOutputStream());
 
-            byte[] buffer = new byte[6000]; // hard coded to maximum HTTP payload of 6kb
+            byte[] buffer = new byte[2000]; // hard coded to maximum HTTP payload of 6kb
             in.read(buffer);
             String input = new String(buffer, "UTF-8").trim();
 
@@ -207,6 +207,8 @@ public class RunWebServer implements Runnable {
             return "text/html";
         else if (fileRequested.endsWith(".css"))
             return "text/css";
+        else if (fileRequested.endsWith(".svg"))
+            return "image/svg+xml";
         else
             return "text/plain";
     }
