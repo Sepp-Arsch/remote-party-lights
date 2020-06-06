@@ -95,6 +95,7 @@ public class JsonHandler {
         obj.put("DATABITS", serialSettings.dataBits);
         obj.put("STOPBITS", serialSettings.stopBits);
         obj.put("PARITY", serialSettings.parity);
+        obj.put("ONLYSENDONCHANGE", serialSettings.onlySendOnChanges);
         out.put(CMD.GETSERIAL.toString(), obj);
     }
 
