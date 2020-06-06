@@ -1,5 +1,4 @@
 // Data handling functions
-
 send = function(data, successFunction){
 	$.ajax({
 		type: "POST", url: "/", data: JSON.stringify(data),
@@ -9,46 +8,74 @@ send = function(data, successFunction){
 	});
 };
 
+// Data packets
+sendStatus = function() {
+	send({"CMD":"STATUS","CMD":"PORTS"}, function(data) {
+		$("#panel-server-response").html(JSON.stringify(data));
+		$("#form-port").val(data.STATUS.PORT);
+	});
+};
+
+sendGetLight = function() {
+	send({"CMD":"GETLIGHT"}, function(data) {
+		$("#panel-server-response").html(JSON.stringify(data));
+		$("#form-red").val(data.GETLIGHT.R);
+		$("#form-green").val(data.GETLIGHT.G);
+		$("#form-blue").val(data.GETLIGHT.B);
+		$("#form-alpha").val(data.GETLIGHT.A);
+		$("#form-mode").val(data.GETLIGHT.MODE);
+		$("#form-interval").val(data.GETLIGHT.INTERVAL);
+	});
+};
+
+sendGetSerial = function() {
+	send({"CMD":"GETSERIAL"}, function(data) {
+		$("#panel-server-response").html(JSON.stringify(data));
+		$("#form-delay").val(data.GETSERIAL.DELAY);
+		$("#form-baudrate").val(data.GETSERIAL.BAUDRATE);
+		$("#form-databits").val(data.GETSERIAL.DATABITS);
+		$("#form-stopbits").val(data.GETSERIAL.STOPBITS);
+		$("#form-parity").val(data.GETSERIAL.PARITY);
+		$("#check-onlysendonchange").prop("checked", data.GETSERIAL.ONLYSENDONCHANGE);
+	});
+};
+
+sendPorts = function() {
+	send({"CMD":"PORTS"}, function(data) {
+		$("#panel-server-response").html(JSON.stringify(data));
+	});
+};
+
+// Visible data
+updateAll = function() {
+	$.when().
+	then(sendGetLight).
+	then(sendGetSerial).
+	then(sendStatus).
+	then(sendPorts);
+};
+//updateAll();
 
 // Button functionality
-$("#btn-status").click(function() {
-	send({"CMD":"STATUS"}, function(data) {
-	$("#panel-server-response").html(JSON.stringify(data));
-	$("#form-port").val(data.PORT);
-});
-});
+$("#btn-status").click(sendStatus);
 
 $("#btn-connect").click(function() {
 	send({"CMD":"CONNECT", "PORT": $("#form-port").val()}, function(data) {
-	$("#panel-server-response").html(JSON.stringify(data));
-});
+		sendStatus();
+	});
 });
 
 $("#btn-disconnect").click(function() {
 	send({"CMD":"DISCONNECT"}, function(data) {
-	$("#panel-server-response").html(JSON.stringify(data));
-});
-});
-
-$("#btn-ports").click(function() {
-	send({"CMD":"PORTS"}, function(data) {
-	$("#panel-server-response").html(JSON.stringify(data));
-});
+		sendStatus();
+	});
 });
 
-$("#btn-get-lights").click(function() {
-	send({"CMD":"GETLIGHT"}, function(data) {
-	$("#panel-server-response").html(JSON.stringify(data));
-	$("#form-red").val(data.GETLIGHT.R);
-	$("#form-green").val(data.GETLIGHT.G);
-	$("#form-blue").val(data.GETLIGHT.B);
-	$("#form-alpha").val(data.GETLIGHT.A);
-	$("#form-mode").val(data.GETLIGHT.MODE);
-	$("#form-interval").val(data.GETLIGHT.INTERVAL);
-});
-});
+$("#btn-ports").click(sendPorts);
 
-$("#btn-set-lights").click(function() {
+$("#btn-get-light").click(sendGetLight);
+
+$("#btn-set-light").click(function() {
 	send({
 		"CMD":"SETLIGHT",
 		"R":$("#form-red").val(),
@@ -58,21 +85,11 @@ $("#btn-set-lights").click(function() {
 		"MODE":$("#form-mode").val(),
 		"INTERVAL":$("#form-interval").val()
 	}, function(data) {
-	$("#panel-server-response").html(JSON.stringify(data));
-});
+		$("#panel-server-response").html(JSON.stringify(data));
+	});
 });
 
-$("#btn-get-serial").click(function() {
-	send({"CMD":"GETSERIAL"}, function(data) {
-	$("#panel-server-response").html(JSON.stringify(data));
-	$("#form-delay").val(data.GETSERIAL.DELAY);
-	$("#form-baudrate").val(data.GETSERIAL.BAUDRATE);
-	$("#form-databits").val(data.GETSERIAL.DATABITS);
-	$("#form-stopbits").val(data.GETSERIAL.STOPBITS);
-	$("#form-parity").val(data.GETSERIAL.PARITY);
-	$("#check-onlysendonchange").prop("checked", data.GETSERIAL.ONLYSENDONCHANGE);
-});
-});
+$("#btn-get-serial").click(sendGetSerial);
 
 $("#btn-set-serial").click(function() {
 	send({
@@ -84,6 +101,6 @@ $("#btn-set-serial").click(function() {
 		"PARITY":$("#form-parity").val(),
 		"ONLYSENDONCHANGE":$("#check-onlysendonchange").is(":checked")
 	}, function(data) {
-	$("#panel-server-response").html(JSON.stringify(data));
-});
+		$("#panel-server-response").html(JSON.stringify(data));
+	});
 });

@@ -1,5 +1,7 @@
 package webserver.handler;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import webserver.RunWebServer;
 import webserver.data.LightSettings;
@@ -8,6 +10,8 @@ import webserver.data.SerialSettings;
 import java.awt.*;
 
 public class JsonHandler {
+    public static String cmdKey = "CMD";
+
     private RunWebServer server;
 
     public void setServer(RunWebServer server) {
@@ -17,40 +21,53 @@ public class JsonHandler {
     public String handle(String jsonString) {
         try {
             JSONObject jsonIn = new JSONObject(jsonString);
-            CMD cmd = CMD.valueOf(jsonIn.getString("CMD"));
 
-            JSONObject jsonOut = new JSONObject();
-            switch (cmd) {
-                case CONNECT:
-                    connect(jsonIn, jsonOut);
-                    break;
-                case DISCONNECT:
-                    disconnect(jsonOut);
-                    break;
-                case STATUS:
-                    status(jsonOut);
-                    break;
-                case PORTS:
-                    ports(jsonOut);
-                    break;
-                case GETLIGHT:
-                    getLight(jsonOut);
-                    break;
-                case SETLIGHT:
-                    setLight(jsonIn, jsonOut);
-                    break;
-                case GETSERIAL:
-                    getSerial(jsonOut);
-                    break;
-                case SETSERIAL:
-                    setSerial(jsonIn, jsonOut);
-                    break;
+            Object cmds = jsonIn.get(cmdKey);
+            JSONArray cmdsArray;
+            if (cmds instanceof JSONArray)
+                cmdsArray = jsonIn.getJSONArray(cmdKey);
+            else if (cmds instanceof String)
+                cmdsArray = new JSONArray().put(jsonIn.getString(cmdKey));
+            else {
+                StringBuilder sb = new StringBuilder("Unknown command, allowed commands are:");
+                for (CMD c : CMD.values())
+                    sb.append(" " + c.toString());
+                throw new JSONException(sb.toString());
             }
 
+
+            JSONObject jsonOut = new JSONObject();
+            for (Object cmd : cmdsArray) {
+                switch (CMD.valueOf(cmd.toString())) {
+                    case CONNECT:
+                        connect(jsonIn, jsonOut);
+                        break;
+                    case DISCONNECT:
+                        disconnect(jsonOut);
+                        break;
+                    case STATUS:
+                        status(jsonOut);
+                        break;
+                    case PORTS:
+                        ports(jsonOut);
+                        break;
+                    case GETLIGHT:
+                        getLight(jsonOut);
+                        break;
+                    case SETLIGHT:
+                        setLight(jsonIn, jsonOut);
+                        break;
+                    case GETSERIAL:
+                        getSerial(jsonOut);
+                        break;
+                    case SETSERIAL:
+                        setSerial(jsonIn, jsonOut);
+                        break;
+                }
+            }
             return jsonOut.toString();
-        } catch (EnumConstantNotPresentException e) {
-            return "{\"error\":\"could not parse received data\", \"stacktrace\":\"" +
-                    e.getMessage() + "\"}";
+        } catch (EnumConstantNotPresentException | JSONException e) {
+            return "{\"error\":" + e.getLocalizedMessage() + ", \"input\":\"" + jsonString + "\"}";
         }
     }
 
@@ -113,8 +130,10 @@ public class JsonHandler {
 
     private void status(JSONObject out) {
         String serialStatus = server.getSerialStatus();
-        out.put("PORT", serialStatus);
-        out.put("CONNECTED", !serialStatus.equals("DISCONNECTED"));
+        JSONObject obj = new JSONObject();
+        obj.put("PORT", serialStatus);
+        obj.put("CONNECTED", !serialStatus.equals("DISCONNECTED"));
+        out.put(CMD.STATUS.toString(), obj);
     }
 
     public enum CMD {
