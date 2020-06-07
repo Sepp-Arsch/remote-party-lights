@@ -1,4 +1,5 @@
-#include <RCSwitch.h>
+#include <SPI.h>
+#include <LoRa.h>
 #include <FastLED.h>
 #include <Adafruit_NeoPixel.h>
 
@@ -37,14 +38,13 @@
 //Config:
 #define ID            1     //ID des Ballon / Arduino
 #define LEDPin        6     //LED Pin am Arduino
-#define RecievePin    0     //Empfängerpin am Arduino (Interrupt 0 = Pin 2)
 #define LEDCount     10     //Länge des LED Streifen
 #define debounce   2000     //Cooldownzeit in ms für einzelne Befehle
 #define Resolution    2     //Auflösung beim Faden
 
 //Objekte:
 Adafruit_NeoPixel strip(LEDCount, LEDPin, NEO_GRB + NEO_KHZ800);
-RCSwitch Empfaenger = RCSwitch();
+
 
 //Variabeln:
 unsigned long previousMillis = 0; 
@@ -53,6 +53,7 @@ int command_t = 0;        //Kommando Timestamp
 int commandreset_t = 1000;//Kommandoblockade Wirkungszeit
 
 unsigned long Input = 0;  //Input vom Empfangsmodul
+String inputString;       //Input vom Empfangsmodul als String
 int par_1 = 0;            //Parameter 1
 int par_2 = 0;            //Parameter 2
 int par_3 = 0;            //Parameter 3
@@ -69,7 +70,7 @@ int interval = 0;         //Intervalzeit
 int interval_r = 0;       //Zufallsinterval
 int T_Flash = 100;        //Blitzdauer in ms
 int command = 99;         //Aktuelles Kommando
-int CommandBuffer = 99;      //Neues Kommando 
+int CommandBuffer = 99;   //Neues Kommando 
 
 
 //##############################################################################################
@@ -78,6 +79,15 @@ int CommandBuffer = 99;      //Neues Kommando
 
 void setup() {
   Serial.begin(9600);
+  while (!Serial);
+
+  Serial.println("LoRa Receiver");
+
+  if (!LoRa.begin(433E6)) {
+    Serial.println("Starting LoRa failed!");
+    while (1);
+  }
+  
   strip.begin();
   strip.fill(strip.Color(0, 255, 0)); //    |
   strip.setBrightness(100);           //    |
@@ -85,7 +95,6 @@ void setup() {
   delay(500);                         //    |
   strip.clear();                      //    |
   strip.show();                       //    |
-  Empfaenger.enableReceive(RecievePin);
 }
 
 //##############################################################################################
@@ -95,11 +104,21 @@ void setup() {
 void loop() {
   //Serial.println("Loop");
   currentMillis = millis();
-  if (Empfaenger.available()) {
-    Input = Empfaenger.getReceivedValue();
+  int packetSize = LoRa.parsePacket();
+  if (packetSize) {
+    inputString = "";
+    while (LoRa.available()) {
+      
+      char inChar = (char)LoRa.read();
+      inputString += inChar;
+    }
+    //Input = atoi(inputString);
+    Input = inputString.toInt();
     Serial.print("Empfangen: ");
-    Serial.println(Input);
-    Empfaenger.resetAvailable();
+    Serial.print(Input);
+    Serial.print(", RSSI: ");
+    Serial.println(LoRa.packetRssi());
+    
     par_4 = Input % 100;
     par_3 = (Input / 100) % 100;
     par_2 = (Input / 10000) % 100;
@@ -247,4 +266,3 @@ void setStrip(){
   strip.setBrightness(val_h); 
   strip.show();
 }
-

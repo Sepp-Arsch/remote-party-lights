@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/rpl.css" rel="stylesheet">
+  <title>Arduino Party Lights</title>
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 container">
+        <h3>Party Lights Server</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <div class="mb-3">
+          <button type="button" class="btn btn-primary" id="btn-update"><img src="svg/download.svg" color="white"/> Update</button> <button type="button" class="btn btn-primary" id="btn-save"><img src="svg/upload.svg" color="white"/> Save</button>
+        </div>
+        <div class="wheel col-12 mb-3" id="colorWheel"></div>
+        <div class="input-group mb-1">
+          <div class="input-group-prepend">
+            <span class="input-group-text">MODE</span>
+          </div>
+          <input type="text" class="form-control" id="form-mode">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+            <div class="dropdown-menu" id="drop-mode">
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">INTERVAL</span>
+          </div>
+          <input type="number" class="form-control" id="form-interval">
+        </div>
+        <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseColor" aria-expanded="false" aria-controls="collapseColor">Color Values</button>
+        <div class="collapse" id="collapseColor">
+          <div class="card card-body">
+            <div class="input-group mb-1">
+              <div class="input-group-prepend">
+                <span class="input-group-text">RED</span>
+              </div>
+              <input type="number" class="form-control" id="form-red">
+            </div>
+            <div class="input-group mb-1">
+              <div class="input-group-prepend">
+                <span class="input-group-text">GREEN</span>
+              </div>
+              <input type="number" class="form-control" id="form-green">
+            </div>
+            <div class="input-group mb-1">
+              <div class="input-group-prepend">
+                <span class="input-group-text">BLUE</span>
+              </div>
+              <input type="number" class="form-control" id="form-blue">
+            </div>
+            <div class="input-group mb-1">
+              <div class="input-group-prepend">
+                <span class="input-group-text">ALPHA</span>
+              </div>
+              <input type="number" class="form-control" id="form-alpha">
+            </div>
+            <button type="button" class="btn btn-light" id="btn-white">Reset Color</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-12 col-md-6 mb-3">
+        <div class="mb-3">
+          <button type="button" class="btn btn-primary" id="btn-connect">Connect</button> <button type="button" class="btn btn-danger" id="btn-disconnect" style="display: none;">Disconnect</button> 
+          <button type="button" class="btn btn-light" id="btn-noports">Update for ports...</button>
+          <div class="btn-group btn-group-toggle" data-toggle="buttons" id="btn-port-group" style="display: none;">
+          </div>
+        </div>
+        <div class="input-group mb-1">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Save delay</span>
+          </div>
+          <input type="number" class="form-control" id="form-save-delay" value="100">
+        </div>
+        <div class="custom-control custom-checkbox mb-3">
+          <input type="checkbox" class="custom-control-input" id="check-save-delay">
+          <label class="custom-control-label" for="check-save-delay">Auto-save settings. <em>(default: manual save)</em></label>
+        </div>
+
+        <div class="input-group mb-1">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Serial delay</span>
+          </div>
+          <input type="number" class="form-control" id="form-delay">
+        </div>
+        <div class="custom-control custom-checkbox mb-3">
+          <input type="checkbox" class="custom-control-input" id="check-onlysendonchange">
+          <label class="custom-control-label" for="check-onlysendonchange">Send serial package only on-change. <em>(default: auto-send)</em></label>
+        </div>
+
+        <div class="input-group mb-1">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Active Port*</span>
+          </div>
+          <input type="text" class="form-control" id="form-port" disabled>
+        </div>
+        <div class="input-group mb-1">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Baud rate*</span>
+          </div>
+          <input type="number" class="form-control" id="form-baudrate">
+        </div>
+        <div class="input-group mb-1">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Data bits*</span>
+          </div>
+          <input type="number" class="form-control" id="form-databits">
+        </div>
+        <div class="input-group mb-1">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Stop bits*</span>
+          </div>
+          <input type="number" class="form-control" id="form-stopbits">
+        </div>
+        <div class="input-group mb-1">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Parity*</span>
+          </div>
+          <input type="number" class="form-control" id="form-parity">
+        </div>
+        <p><small>* Requires re-connect before changes are active.</small></p>
+        <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseResponse" aria-expanded="false" aria-controls="collapseResponse">Server response</button>
+        <div class="collapse" id="collapseResponse">
+          <samp><div class="card card-body" id="panel-server-response"></div></samp>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/iro.js"></script>
+
+  <script src="js/rpl.colorwheel.js"></script>
+  <script src="js/rpl.ajax.js"></script>
+</body>
+</html>

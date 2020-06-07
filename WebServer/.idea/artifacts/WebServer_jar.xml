@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="WebServer:jar">
+    <output-path>$PROJECT_DIR$/html</output-path>
+    <root id="archive" name="WebServer.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/html/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="WebServer" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/jSerialComm-2.6.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/json-20200518.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
