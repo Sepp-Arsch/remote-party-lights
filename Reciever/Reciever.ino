@@ -3,13 +3,18 @@
 #include <FastLED.h>
 #include <Adafruit_NeoPixel.h>
 
-/* Kodierung: ---------------------> XX XX XX XX XX  
- *                                   |  |  |  |  |
- * 2 Stellen: Kommando Nr. 00 - 99 _/   |  |  |  |
- * 2 Stellen: Param. 1     00 - 99 ____/   |  |  |
- * 2 Stellen: Param. 2     00 - 99 _______/   |  |
- * 2 Stellen: Param. 3     00 - 99 __________/   |
- * 2 Stellen: Param. 4     00 - 99 _____________/
+/* Kodierung: ---------------------> XX XX XX XX XX XX XX XX XX XX
+ *                                   |  |  |  |  |  |  |  |  |  |
+ * 2 Stellen: Kommando Nr. 00 - 99 _/   |  |  |  |  |  |  |  |  |
+ * 2 Stellen: Wert Rot     00 - 99 ____/   |  |  |  |  |  |  |  |
+ * 2 Stellen: Wert Grün    00 - 99 _______/   |  |  |  |  |  |  |
+ * 2 Stellen: Wert Blau    00 - 99 __________/   |  |  |  |  |  |
+ * 2 Stellen: Helligkeit   00 - 99 _____________/   |  |  |  |  |
+ * 2 Stellen: Zeitwert 1   00 - 99 ________________/   |  |  |  |
+ * 2 Stellen: Zeitwert 2   00 - 99 ___________________/   |  |  |
+ * 2 Stellen: ab ID...     00 - 99 ______________________/   |  |
+ * 2 Stellen: ...bis ID    00 - 99 _________________________/   |
+ * 2 Stellen: Pattern Nr.  00 - 99 ____________________________/
 */
 
 //Kommandos:
@@ -38,7 +43,7 @@
 //Config:
 #define ID            1     //ID des Ballon / Arduino
 #define LEDPin        6     //LED Pin am Arduino
-#define LEDCount     10     //Länge des LED Streifen
+#define LEDCount     20     //Länge des LED Streifen
 #define debounce   2000     //Cooldownzeit in ms für einzelne Befehle
 #define Resolution    2     //Auflösung beim Faden
 
@@ -112,12 +117,20 @@ void loop() {
       char inChar = (char)LoRa.read();
       inputString += inChar;
     }
-    //Input = atoi(inputString);
-    Input = inputString.toInt();
     Serial.print("Empfangen: ");
-    Serial.print(Input);
+    Serial.print(inputString);
     Serial.print(", RSSI: ");
-    Serial.println(LoRa.packetRssi());
+    Serial.print(LoRa.packetRssi());
+
+    char command_1 = inputString.charAt(0);
+    char command_2 = inputString.charAt(1);
+    command = 0;
+    command = 10 * atoi(command_1);
+    command += atoi(command_2);
+    Serial.print(", Kommando: ");
+    Serial.println(command);
+    /*
+    Input = inputString.toInt();
     
     par_4 = Input % 100;
     par_3 = (Input / 100) % 100;
@@ -128,8 +141,9 @@ void loop() {
     if (command == C_Blink & CommandBuffer == C_Blink_t){CommandBuffer = C_Leer;} //Blockieren von doppelter Startverzögerung
     if (command == C_Pulse & CommandBuffer == C_Pulse_t){CommandBuffer = C_Leer;} // ||
     if (CommandBuffer != C_Leer){command = CommandBuffer;}
+    */
   }
-  
+  /*
   if (command != 99){
     switch(command){
       case C_Ein: //1
@@ -237,6 +251,7 @@ void loop() {
       break;
     }
   }
+  */
 }
 
 void mapColor(){

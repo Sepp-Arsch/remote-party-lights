@@ -2,7 +2,10 @@
 #include <LoRa.h>
 #include <SPI.h>
 
-unsigned long  SerialData = 0; 
+unsigned long SerialData = 0; 
+String  Test = "This text is used to test transmitting and recieving long strings, just like this one!";
+String inputString = "";         // a String to hold incoming data
+bool stringComplete = false;  // whether the string is complete
 
 void setup() {
   Serial.begin(9600);
@@ -16,19 +19,31 @@ void setup() {
   }
   
   Serial.setTimeout(100);
+  //inputString.reserve(64);
+
+  //Continous transmit for testing purposes:
+  while (true) {
+    LoRa.beginPacket();
+    LoRa.print(Test);
+    LoRa.endPacket();
+    delay(2000);
+  }
 }
 
 void loop() {
-  SerialData = Serial.parseInt();
-  if (SerialData > 0) {
+  if (stringComplete) {
     Serial.print("Sending: "); Serial.println(SerialData);
     LoRa.beginPacket();
-    LoRa.print(SerialData);
+    LoRa.print(inputString);
     //LoRa.print(Test);
     //LoRa.print("da geht noch mehr Jungs");
     LoRa.endPacket();
+    // clear the string:
+    inputString = "";
+    stringComplete = false;
   }
-  /* while (true) {
+  /*
+   while (true) {
     Serial.println("ROT");
     LoRa.beginPacket();
     LoRa.print(199000099);
@@ -41,4 +56,18 @@ void loop() {
     delay(1000);
   }*/
   
+}
+
+void serialEvent() {
+  while (Serial.available()) {
+    // get the new byte:
+    char inChar = (char)Serial.read();
+    // add it to the inputString:
+    inputString += inChar;
+    // if the incoming character is a newline, set a flag so the main loop can
+    // do something about it:
+    if (inChar == '\n') {
+      stringComplete = true;
+    }
+  }
 }
