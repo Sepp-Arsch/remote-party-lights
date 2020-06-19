@@ -9,18 +9,19 @@
 
 //Command syntax: CC|RR|GG|BB|Br|Br|Ti|Ti|ID|ID|Pa
 
-/* Kodierung: ---------------------> XX XX XX XX XX XX XX XX XX XX
- *                                   |  |  |  |  |  |  |  |  |  |
- * 2 Stellen: Kommando Nr. 00 - 99 _/   |  |  |  |  |  |  |  |  |
- * 2 Stellen: Wert Rot     00 - 99 ____/   |  |  |  |  |  |  |  |
- * 2 Stellen: Wert Grün    00 - 99 _______/   |  |  |  |  |  |  |
- * 2 Stellen: Wert Blau    00 - 99 __________/   |  |  |  |  |  |
- * 2 Stellen: Helligkeit   00 - 99 _____________/   |  |  |  |  |
- * 2 Stellen: Zeitwert 1   00 - 99 ________________/   |  |  |  |
- * 2 Stellen: Zeitwert 2   00 - 99 ___________________/   |  |  |
- * 2 Stellen: ab ID...     00 - 99 ______________________/   |  |
- * 2 Stellen: ...bis ID    00 - 99 _________________________/   |
- * 2 Stellen: Pattern Nr.  00 - 99 ____________________________/
+/* Kodierung: ---------------------> XX XX XX XX XX XX XX XX XX XX XX
+ *                                   |  |  |  |  |  |  |  |  |  |  |
+ * 2 Stellen: Kommando Nr. 00 - 99 _/   |  |  |  |  |  |  |  |  |  |
+ * 2 Stellen: Wert Rot     00 - 99 ____/   |  |  |  |  |  |  |  |  |
+ * 2 Stellen: Wert Grün    00 - 99 _______/   |  |  |  |  |  |  |  |
+ * 2 Stellen: Wert Blau    00 - 99 __________/   |  |  |  |  |  |  |
+ * 2 Stellen: Helligkeit 1 00 - 99 _____________/   |  |  |  |  |  |
+ * 2 Stellen: Helligkeit 2 00 - 99 ________________/   |  |  |  |  |
+ * 2 Stellen: Zeitwert 1   00 - 99 ___________________/   |  |  |  |
+ * 2 Stellen: Zeitwert 2   00 - 99 _______________________/  |  |  |
+ * 2 Stellen: ab ID...     00 - 99 _________________________/   |  |
+ * 2 Stellen: ...bis ID    00 - 99 ____________________________/   |
+ * 2 Stellen: Pattern Nr.  00 - 99 _______________________________/
 */
 
 //        name       no.     description                                           parameters (r= required, o= optional, -= no effect)
