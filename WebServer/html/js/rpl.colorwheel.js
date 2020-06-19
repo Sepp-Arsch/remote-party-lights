@@ -52,7 +52,7 @@ autoHue = function() {
 	if($("#check-autoHue").is(":checked")) {
         colorWheel.color.setChannel("hsla", "h", (colorWheel.color.hsla.h + 1) % 360);
         updateFormFromWheel();
-        setTimeout(autoHue, 50);
+        setTimeout(autoHue, 20);
     }
 };
 $("#check-autoHue").change(autoHue);
