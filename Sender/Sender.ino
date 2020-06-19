@@ -4,7 +4,7 @@
 
 // Variables
 String inputString; // a String to hold incoming data
-int inputSize = 20; // in Bytes
+int inputSize = 22; // in Bytes
 
 // Testing (if true, per-second alternating colors)
 bool testMode = false;
