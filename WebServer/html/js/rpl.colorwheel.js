@@ -42,6 +42,7 @@ $("#form-green").change(function() {
 $("#form-blue").change(function() {
   colorWheel.color.setChannel("rgb", "b", $(this).val());
 });
+
 $("#form-alpha").change(function() {
   colorWheel.color.setChannel("rgb", "a", $(this).val() / 255);
 });

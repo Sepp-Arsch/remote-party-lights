@@ -87,7 +87,7 @@ public class JsonHandler {
         obj.put("G", lightSettings.color.getGreen());
         obj.put("B", lightSettings.color.getBlue());
         obj.put("A", lightSettings.color.getAlpha());
-        obj.put("Amin", lightSettings.color.getAlpha());
+        obj.put("Amin", lightSettings.alphaMin);
         obj.put("Imin", lightSettings.intervalMin);
         obj.put("Imax", lightSettings.intervalMax);
         obj.put("IDfrom", lightSettings.idFrom);
