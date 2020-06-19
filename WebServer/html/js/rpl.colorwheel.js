@@ -24,28 +24,38 @@ var colorWheel = new iro.ColorPicker("#colorWheel", {
   ]
 });
 
-colorWheel.on("input:change", function(color, changes){
+$("#form-red").change(function() {
+  colorWheel.color.setChannel("rgba", "r", $(this).val());
+});
+
+$("#form-green").change(function() {
+  colorWheel.color.setChannel("rgba", "g", $(this).val());
+});
+
+$("#form-blue").change(function() {
+  colorWheel.color.setChannel("rgba", "b", $(this).val());
+});
+
+$("#form-alpha").change(function() {
+  colorWheel.color.setChannel("rgba", "a", $(this).val() / 255);
+});
+
+updateFormFromWheel = function() {
   $("#form-red").val(colorWheel.color.rgba.r);
   $("#form-green").val(colorWheel.color.rgba.g);
   $("#form-blue").val(colorWheel.color.rgba.b);
   $("#form-alpha").val(parseInt(colorWheel.color.rgba.a * 255));
-});
+}
+colorWheel.on("input:change", updateFormFromWheel);
 
-$("#form-red").change(function() {
-  colorWheel.color.setChannel("rgb", "r", $(this).val());
-});
-
-$("#form-green").change(function() {
-  colorWheel.color.setChannel("rgb", "g", $(this).val());
-});
-
-$("#form-blue").change(function() {
-  colorWheel.color.setChannel("rgb", "b", $(this).val());
-});
-
-$("#form-alpha").change(function() {
-  colorWheel.color.setChannel("rgb", "a", $(this).val() / 255);
-});
+autoHue = function() {
+	if($("#check-autoHue").is(":checked")) {
+        colorWheel.color.setChannel("hsla", "h", (colorWheel.color.hsla.h + 1) % 360);
+        updateFormFromWheel();
+        setTimeout(autoHue, 50);
+    }
+};
+$("#check-autoHue").change(autoHue);
 
 resetColorForm = function() {
     colorWheel.color.reset();
@@ -55,7 +65,6 @@ resetColorForm = function() {
     $("#form-alpha").val(255);
     $("#form-alphaMin").val(0);
 }
-
 $("#btn-white").click(resetColorForm);
 $("#btn-white-save").click(function() {
     resetColorForm();
