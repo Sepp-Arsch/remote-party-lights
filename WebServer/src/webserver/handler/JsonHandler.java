@@ -87,15 +87,25 @@ public class JsonHandler {
         obj.put("G", lightSettings.color.getGreen());
         obj.put("B", lightSettings.color.getBlue());
         obj.put("A", lightSettings.color.getAlpha());
-        obj.put("INTERVAL", lightSettings.interval);
+        obj.put("Amin", lightSettings.color.getAlpha());
+        obj.put("Imin", lightSettings.intervalMin);
+        obj.put("Imax", lightSettings.intervalMax);
+        obj.put("IDfrom", lightSettings.idFrom);
+        obj.put("IDto", lightSettings.idTo);
+        obj.put("IDpattern", lightSettings.idPattern);
         out.put(CMD.GETLIGHT.toString(), obj);
     }
 
     private void setLight(JSONObject in, JSONObject out) {
         server.setLightSettings(new LightSettings(
                 new Color(in.getInt("R"), in.getInt("G"), in.getInt("B"), in.getInt("A")),
+                in.getInt("Amin"),
                 LightSettings.MODE.valueOf(in.getString("MODE")),
-                in.getInt("INTERVAL")
+                in.getInt("Imin"),
+                in.getInt("Imax"),
+                in.getInt("IDfrom"),
+                in.getInt("IDto"),
+                in.getInt("IDpattern")
         ));
         out.put(CMD.SETLIGHT.toString(), true);
     }
