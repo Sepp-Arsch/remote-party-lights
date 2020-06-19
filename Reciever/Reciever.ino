@@ -1,3 +1,69 @@
+//##############################################################################################
+//# Wiring:
+//##############################################################################################
+
+/*              Arduino Nano     
+ *                  _____
+ *              ___| USB |___
+ *             |   |_____|   |
+ + [LoRa] SCK -|o D13   D12 o|- [LoRa] MISO
+ * [LoRa] VIN -|o 3v3   D11 o|- [LoRa] MOSI
+ *          / -|o REF   D10 o|- [LoRa] NSS
+ *          / -|o A0     D9 o|- /
+ *   ID_bit_1 -|o A1     D8 o|- /
+ *   ID_bit_2 -|o A2     D7 o|- /
+ *   ID_bit_3 -|o A3     D6 o|- [LEDs] Din
+ *   ID_bit_4 -|o A4     D5 o|- /
+ *   ID_bit_5 -|o A5     D4 o|- /
+ *          / -|o A6     D3 o|- /
+ *          / -|o A7     D2 o|- [LoRa] DI00
+ * [PSU]  +5V -|o 5V    GND o|- /
+ *          / -|o RST   RST o|- /
+ * [PSU]  GND -|o GND    RX o|- /
+ *          / -|o VIN    TX o|- /
+ *             |_____________|
+ *           
+ *      
+ *              LoRa Module
+ *              ____________________
+ *      [ant] -|o              GND o|- /
+ *            -|o             DI01 o|- /
+ *             |              DI02 o|- /
+ *             |              DI03 o|- /
+ *             |               VCC o|- [Nano] 3v3
+ *             |              MISO o|- [Nano] D12
+ *             |              MOSI o|- [Nano] D11
+ *             |              SLCK o|- [Nano] D13
+ *             |               NSS o|- [Nano] D10
+ *             |              DI00 o|- [Nano] D2
+ *             |               RST o|- [Nano] D9
+ *             |               GND o|- [PSU] GND
+ *             |____________________|
+ *      
+ *      
+ *             NeoPixel LED Strip                          |<------- 20 X ------>|
+ *              ________________________________________________________________________________/     /_____________________________________
+ * [PSU]  +5V -|o 5V   .-----.   5V o|o 5V   .-----.   5V o|o 5V   .-----.   5V o|o 5V   .-----/     /  .-----.   5V o|o 5V   .-----.   5V o|-
+ * [Nano]  D6 -|o Din  |     | Dout o|o Din  |     | Dout o|o Din  |     | Dout o|o Din  |    / ... /n  |     | Dout o|o Din  |     | Dout o|-
+ * [PSU]  GND -|o GND  |_____|  GND o|o GND  |_____|  GND o|o GND  |_____|  GND o|o GND  |___/     /ND  |_____|  GND o|o GND  |_____|  GND o|-
+ *             |_____________________|_____________________|_____________________|__________/     /___________________|_____________________|
+ *                                                                                         /     /
+ *             
+ *             Power Supply         On/Off Switch
+ *              _________________       __I__
+ * [Batt] (+) -|o B+        +5V o|-----|_____|----- [Nano] 5V, [LED] 5V
+ *             |                 |
+ *             |                 |
+ * [Batt] (-) -|o B-   ___  GND o|- [Nano] GND, [LoRa] GND, [LED] GND
+ *             |______|USB|______|
+ *                    |___|
+ *                charging port
+ */
+
+//##############################################################################################
+//# Libraries:
+//##############################################################################################
+
 #include <SPI.h>
 #include <LoRa.h>
 #include <FastLED.h>
@@ -9,18 +75,19 @@
 
 //Command syntax: CC|RR|GG|BB|Br|Br|Ti|Ti|ID|ID|Pa
 
-/* Kodierung: ---------------------> XX XX XX XX XX XX XX XX XX XX
- *                                   |  |  |  |  |  |  |  |  |  |
- * 2 Stellen: Kommando Nr. 00 - 99 _/   |  |  |  |  |  |  |  |  |
- * 2 Stellen: Wert Rot     00 - 99 ____/   |  |  |  |  |  |  |  |
- * 2 Stellen: Wert Grün    00 - 99 _______/   |  |  |  |  |  |  |
- * 2 Stellen: Wert Blau    00 - 99 __________/   |  |  |  |  |  |
- * 2 Stellen: Helligkeit   00 - 99 _____________/   |  |  |  |  |
- * 2 Stellen: Zeitwert 1   00 - 99 ________________/   |  |  |  |
- * 2 Stellen: Zeitwert 2   00 - 99 ___________________/   |  |  |
- * 2 Stellen: ab ID...     00 - 99 ______________________/   |  |
- * 2 Stellen: ...bis ID    00 - 99 _________________________/   |
- * 2 Stellen: Pattern Nr.  00 - 99 ____________________________/
+/* Kodierung: ---------------------> XX XX XX XX XX XX XX XX XX XX XX
+ *                                   |  |  |  |  |  |  |  |  |  |  |
+ * 2 Stellen: Kommando Nr. 00 - 99 _/   |  |  |  |  |  |  |  |  |  |
+ * 2 Stellen: Wert Rot     00 - 99 ____/   |  |  |  |  |  |  |  |  |
+ * 2 Stellen: Wert Grün    00 - 99 _______/   |  |  |  |  |  |  |  |
+ * 2 Stellen: Wert Blau    00 - 99 __________/   |  |  |  |  |  |  |
+ * 2 Stellen: Helligkeit1  00 - 99 _____________/   |  |  |  |  |  |
+ * 2 Stellen: Helligkeit2  00 - 99 ________________/   |  |  |  |  |
+ * 2 Stellen: Zeitwert 1   00 - 99 ___________________/   |  |  |  |
+ * 2 Stellen: Zeitwert 2   00 - 99 ______________________/   |  |  |
+ * 2 Stellen: ab ID...     00 - 99 _________________________/   |  |
+ * 2 Stellen: ...bis ID    00 - 99 ____________________________/   |
+ * 2 Stellen: Pattern Nr.  00 - 99 _______________________________/
 */
 
 //        name       no.     description                                           parameters (r= required, o= optional, -= no effect)
@@ -73,12 +140,12 @@ int val_patternID   = 0;
 //# Config:
 //##############################################################################################
 
-#define pin_bit_1             3
-#define pin_bit_2             4
-#define pin_bit_3             5
+#define pin_bit_1             A1
+#define pin_bit_2             A2
+#define pin_bit_3             A3
 #define pin_LED               6                              //LED Pin am Arduino
-#define pin_bit_4             7
-#define pin_bit_5             8
+#define pin_bit_4             A4
+#define pin_bit_5             A5
 #define pin_recieve           0                              //Empfängerpin am Arduino (Interrupt 0 = Pin 2)
 
 #define LEDCount             20                              //Länge des LED Streifen
@@ -239,11 +306,11 @@ void loop() {
       break;
       //##############################################################################################
       case C_PULSE: //5
-        if (currentMillis - previousMillis >= val_time_on / ((val_bright_max - val_bright_min)/Resolution) && LEDState = LOW) {
+        if ((currentMillis - previousMillis >= val_time_on / (val_bright_max - val_bright_min)/Resolution) && LEDState == LOW) {
           LEDBrightness += Resolution;
           previousMillis = currentMillis;
         }
-        if (currentMillis - previousMillis >= val_time_off / ((val_bright_max - val_bright_min)/Resolution) && LEDState = HIGH) {
+        if ((currentMillis - previousMillis >= val_time_off / (val_bright_max - val_bright_min)/Resolution) && LEDState == HIGH) {
           LEDBrightness -= Resolution;
           previousMillis = currentMillis;
         }
