@@ -3,6 +3,12 @@
 #include <FastLED.h>
 #include <Adafruit_NeoPixel.h>
 
+//##############################################################################################
+//# Commands:
+//##############################################################################################
+
+//Command syntax: CC|RR|GG|BB|Br|Br|Ti|Ti|ID|ID|Pa
+
 /* Kodierung: ---------------------> XX XX XX XX XX XX XX XX XX XX
  *                                   |  |  |  |  |  |  |  |  |  |
  * 2 Stellen: Kommando Nr. 00 - 99 _/   |  |  |  |  |  |  |  |  |
@@ -17,41 +23,81 @@
  * 2 Stellen: Pattern Nr.  00 - 99 ____________________________/
 */
 
-//Kommandos:
-//Name                Nr.     Beschreibung                                          Parameter (Par. 1, 2, 3 und 4, je 2 Stellen)
-#define C_Leer        99    //Kein (neues) Kommando                                 Kein Parameter
-#define C_Ein         1     //LEDs laut Parameter einschalten                       Rot, Grün, Blau, Helligkeit
-#define C_Aus         2     //LEDs aus                                              Kein Parameter
-#define C_Blink       3     //LEDs Blinken                                          Rot, Grün, Blau, Interval
-#define C_Blink_t     4     //LEDs Blinken + zufällige Startverzögerung             Rot, Grün, Blau, Interval
-#define C_Pulse       5     //LEDs Pulsieren                                        Rot, Grün, Blau, Interval
-#define C_Pulse_t     6     //LEDs Pulsieren + zufällige Startverzögerung           Rot, Grün, Blau, Interval
-#define C_Flash       7     //LEDs Blitzen                                          Rot, Grün, Blau, Interval
-#define C_Flash_r     8     //LEDs Blitzen zufällig                                 Rot, Grün, Blau, Interval
-#define C_Ein_r       9     //LEDs bekommen zufällige Farbe                         Kein Parameter
-#define C_Farbe      10     //Farb- und Helligkeitwerte in Speicher schreiben       Rot, Grün, Blau, Helligkeit
-#define C_Pulse_r    11     //LEDs Pulsieren in zufälligen Farben & Zeiten          -, -, -, Interval
-#define C_a          12     //
-#define C_b          13     //
-#define C_c          14     //
-#define C_d          15     //
-#define C_e          16     //
-#define C_f          17     //
-#define C_g          18     //
-#define C_h          19     //
+//        name       no.     description                                           parameters (r= required, o= optional, -= no effect)
+//                                                                                 red   green   blue  bright_max  bright_min   t_on    t_off  fromID  toID   patternID   
+#define C_NULL       99    //NULL command                                          -     -       -     -           -            -       -      -        -       -          
+#define C_KILL       98    //turn off every LED                                    -     -       -     -           -            -       -      -        -       -          
+#define C_SET         1    //turn LEDs on                                          r     r       r     o           -            -       -      o        o       o          
+#define C_OFF         2    //turn LEDs off                                         -     -       -     -           -            -       -      o        o       o          
+#define C_BLINK       3    //blink LEDs                                            r     r       r     r           o            r       r      o        o       o          
+#define C_BLINK_T     4    //blink LEDs with random start delay                    r     r       r     r           o            r       r      o        o       o          
+#define C_PULSE       5    //pulse LEDs                                            r     r       r     o           o            r       r      o        o       o          
+#define C_PULSE_T     6    //pulse LEDs with random start delay                    r     r       r     o           -            r       r      o        o       o          
+#define C_FLASH       7    //flash LEDs                                            r     r       r     o           -            r       -      o        o       o          
+#define C_FLASH_R     8    //flash LEDs randomly                                   r     r       r     o           -            r       r      o        o       o          
+#define C_SET_R       9    //turn LEDs on at a random color                        -     -       -     o           -            r       r      o        o       o          
 
-//Config:
-#define ID            1     //ID des Ballon / Arduino
-#define LEDPin        6     //LED Pin am Arduino
-#define LEDCount     20     //Länge des LED Streifen
-#define debounce   2000     //Cooldownzeit in ms für einzelne Befehle
-#define Resolution    2     //Auflösung beim Faden
+#define C_PULSE_R    11    //pulse LEDs with random colors and intervals           -     -       -     o           o            o       o      o        o       o        
 
-//Objekte:
-Adafruit_NeoPixel strip(LEDCount, LEDPin, NEO_GRB + NEO_KHZ800);
+//##############################################################################################
+//# Parameters:
+//##############################################################################################
+
+//  name                   description                                           value             translates to             value   translates to
+int in_command     = 99; //current command                                       0 - 99            command no. 0 - 99
+int in_red         = 0;  //intensity for red                                     0 - 99            0% - 100% red             
+int in_green       = 0;  //intensity for green                                   0 - 99            0% - 100% green           
+int in_blue        = 0;  //intensity for blue                                    0 - 99            0% - 100% blue            
+int in_bright_max  = 0;  //max. brightness                                       1 - 99            1% - 100% brightness      0       max brightness (100%)
+int in_bright_min  = 0;  //min. brightness                                       1 - 99            1% - 100% brightness      0       min brightness (0%)
+int in_time_on     = 0;  //on time                                               1 - 99            20ms - 10000ms            0       default time (1000ms)
+int in_time_off    = 0;  //off time                                              1 - 99            20ms - 10000ms            0       default time (1000ms)
+int in_fromID      = 0;  //only apply to IDs >= ..                               0 - 19            ID 0 - ID 19              
+int in_toID        = 0;  //only apply to IDs <= ..                               0 - 19            ID 0 - ID 19
+int in_patternID   = 0;  //only apply to IDs matching the given pattern          0 - PatternCount  ID 0 - ID PatternCount    >PatternCount -> Pattern will be ignored
+
+int command         = 0;
+int val_red         = 0;
+int val_green       = 0;
+int val_blue        = 0;
+int val_bright_max  = 100;
+int val_bright_min  = 0;
+int val_bright      = 100;
+int val_time_on     = 1000;
+int val_time_off    = 1000;
+int val_fromID      = 0;
+int val_toID        = 20;
+int val_patternID   = 0;
+
+//##############################################################################################
+//# Config:
+//##############################################################################################
+
+#define pin_bit_1             3
+#define pin_bit_2             4
+#define pin_bit_3             5
+#define pin_LED               6                              //LED Pin am Arduino
+#define pin_bit_4             7
+#define pin_bit_5             8
+#define pin_recieve           0                              //Empfängerpin am Arduino (Interrupt 0 = Pin 2)
+
+#define LEDCount             20                              //Länge des LED Streifen
+#define BallonCount          20                              //Anzahl der Ballons
+#define debounce           2000                              //Cooldownzeit in ms für einzelne Befehle
+#define Resolution            2                              //Auflösung beim Faden
+#define T_Flash             100                              //Blitzdauer in ms
 
 
-//Variabeln:
+//##############################################################################################
+//# Objects:
+//##############################################################################################
+
+Adafruit_NeoPixel strip(LEDCount, pin_LED, NEO_GRB + NEO_KHZ800);
+
+//##############################################################################################
+//# Variables:
+//##############################################################################################
+
 unsigned long previousMillis = 0; 
 unsigned long currentMillis = millis();
 int command_t = 0;        //Kommando Timestamp
@@ -59,31 +105,63 @@ int commandreset_t = 1000;//Kommandoblockade Wirkungszeit
 
 unsigned long Input = 0;  //Input vom Empfangsmodul
 String inputString;       //Input vom Empfangsmodul als String
-int par_1 = 0;            //Parameter 1
-int par_2 = 0;            //Parameter 2
-int par_3 = 0;            //Parameter 3
-int par_4 = 0;            //Parameter 4
-
-int val_r = 0;            //Rotwert
-int val_g = 0;            //Grünwert
-int val_b = 0;            //Blauwert
-int val_h = 0;            //Helligkeitswert
 
 bool LEDState = LOW;
 int LEDBrightness = 0;
 int interval = 0;         //Intervalzeit
 int interval_r = 0;       //Zufallsinterval
-int T_Flash = 100;        //Blitzdauer in ms
-int command = 99;         //Aktuelles Kommando
 int CommandBuffer = 99;   //Neues Kommando 
+int ID = 0;
+
+//##############################################################################################
+//# Pattern:
+//##############################################################################################
+
+#define PatternCount 28 //number of predefined patterns
+
+bool pattern[PatternCount][BallonCount] = {                     
+//0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19   //ID
+{ 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 }, //pattern  1: every even ID
+{ 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1 }, //pattern  2: every odd ID
+{ 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0 }, //pattern  3: every 3rd ID
+{ 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1 }, //pattern  4: every 3rd ID NOT
+{ 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 }, //pattern  5: every 4th ID
+{ 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0 }, //pattern  6: every 4th ID NOT
+{ 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }, //pattern  7: every 5th ID
+{ 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0 }, //pattern  8: every 5th ID NOT
+{ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0 }, //pattern  9: every 6th ID
+{ 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1 }, //pattern 10: every 6th ID NOT
+{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 }, //pattern 11: every 7th ID
+{ 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1 }, //pattern 12: every 7th ID NOT
+{ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 }, //pattern 13: every 8th ID
+{ 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1 }, //pattern 14: every 8th ID NOT
+{ 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0 }, //pattern 15: alternating pairs of 2, starting with ID 0
+{ 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1 }, //pattern 16: alternating pairs of 2, starting with ID 2
+{ 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1 }, //pattern 17: alternating pairs of 3, starting with ID 0
+{ 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0 }, //pattern 18: alternating pairs of 3, starting with ID 3
+{ 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1 }, //pattern 19: alternating pairs of 4, starting with ID 0
+{ 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0 }, //pattern 20: alternating pairs of 4, starting with ID 4
+{ 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 }, //pattern 21: alternating pairs of 5, starting with ID 0
+{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1 }, //pattern 22: alternating pairs of 5, starting with ID 5
+{ 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0 }, //pattern 23: alternating pairs of 6, starting with ID 0
+{ 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1 }, //pattern 24: alternating pairs of 6, starting with ID 6
+{ 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1 }, //pattern 25: alternating pairs of 7, starting with ID 0
+{ 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 }, //pattern 26: alternating pairs of 7, starting with ID 7
+{ 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 }, //pattern 27: alternating pairs of 8, starting with ID 0
+{ 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 }  //pattern 28: alternating pairs of 8, starting with ID 8
+};
+
+//{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, //pattern XX: all 1
+//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //pattern XX: all 0
 
 
 //##############################################################################################
-// SETUP
+//# Setup:
 //##############################################################################################
 
 void setup() {
   Serial.begin(9600);
+  ID = getID();
   while (!Serial);
 
   Serial.println("LoRa Receiver");
@@ -93,131 +171,107 @@ void setup() {
     while (1);
   }
   
-  strip.begin();
-  strip.fill(strip.Color(0, 255, 0)); //    |
-  strip.setBrightness(100);           //    |
-  strip.show();                       //    | STARTSIGNAL GRÜN
-  delay(500);                         //    |
-  strip.clear();                      //    |
-  strip.show();                       //    |
+  LED_startup();
 }
 
 //##############################################################################################
-// LOOP
+//# Loop:
 //##############################################################################################
 
 void loop() {
   //Serial.println("Loop");
   currentMillis = millis();
   int packetSize = LoRa.parsePacket();
-  if (packetSize) {
+  if (packetSize > 1) {
     inputString = "";
     while (LoRa.available()) {
       
       char inChar = (char)LoRa.read();
       inputString += inChar;
+      inputString.trim();
     }
-    Serial.print("Empfangen: ");
-    Serial.print(inputString);
-    Serial.print(", RSSI: ");
-    Serial.print(LoRa.packetRssi());
-
-    char command_1 = inputString.charAt(0);
-    char command_2 = inputString.charAt(1);
-    command = 0;
-    command = 10 * atoi(command_1);
-    command += atoi(command_2);
-    Serial.print(", Kommando: ");
-    Serial.println(command);
-    /*
-    Input = inputString.toInt();
+    Serial.print("Empfangen: "); Serial.print(inputString); Serial.print(", RSSI: "); Serial.print(LoRa.packetRssi());
     
-    par_4 = Input % 100;
-    par_3 = (Input / 100) % 100;
-    par_2 = (Input / 10000) % 100;
-    par_1 = (Input / 1000000) % 100;
-    CommandBuffer = (Input / 100000000) % 100;
+    in_command     = inputString.substring(0,2).toInt();
+    in_red         = inputString.substring(2,4).toInt();
+    in_green       = inputString.substring(4,6).toInt();
+    in_blue        = inputString.substring(6,8).toInt();
+    in_bright_max  = inputString.substring(8,10).toInt();
+    in_bright_min  = inputString.substring(10,12).toInt();
+    in_time_on     = inputString.substring(12,14).toInt();
+    in_time_off    = inputString.substring(14,16).toInt();
+    in_fromID      = inputString.substring(16,18).toInt();
+    in_toID        = inputString.substring(18,20).toInt();
+    in_patternID   = inputString.substring(20,22).toInt();
     
-    if (command == C_Blink & CommandBuffer == C_Blink_t){CommandBuffer = C_Leer;} //Blockieren von doppelter Startverzögerung
-    if (command == C_Pulse & CommandBuffer == C_Pulse_t){CommandBuffer = C_Leer;} // ||
-    if (CommandBuffer != C_Leer){command = CommandBuffer;}
-    */
+    mapValues();
+    
+    Serial.print(", Kommando: "); Serial.print(command); Serial.print(", Rot: "); Serial.println(val_red);
   }
-  /*
+  
   if (command != 99){
     switch(command){
-      case C_Ein: //1
-        mapColor();
-        mapHelligkeit();
+      case C_SET: //1
+        val_bright = val_bright_max;
         setStrip();
         command = 99;
       break;
       //##############################################################################################
-      case C_Aus: //2
-        strip.clear();
-        strip.show();
+      case C_OFF: //2
+        strip.clear(); strip.show();
         command = 99;
       break;
       //##############################################################################################
-      case C_Blink: //3
-        mapColor(); mapInterval(); val_h = 100;
-        if (currentMillis - previousMillis >= interval) {
+      case C_BLINK: //3
+        if (currentMillis - previousMillis >= val_time_off && LEDState == LOW) {
           previousMillis = currentMillis;
-          if (LEDState == LOW) {
-            setStrip(); LEDState = HIGH;
-          } 
-          else {
-            strip.clear(); LEDState = LOW;
-          }
-          strip.show();
+          val_bright = val_bright_max;
+          setStrip(); LEDState = HIGH;
         }
-      break;
-      //##############################################################################################
-      case C_Blink_t: //4
-        mapInterval();
-        previousMillis = currentMillis + random(0, interval*2);
-        command = C_Blink;
-      break;
-      //##############################################################################################
-      case C_Pulse: //5
-        mapColor(); mapInterval();
-        if (currentMillis - previousMillis >= interval/(100/Resolution)) {
-          previousMillis = currentMillis;
-          
-          if (LEDState == LOW) {LEDBrightness += Resolution;} 
-          else {LEDBrightness -= Resolution;}
-          
-          if (LEDBrightness >= 100){LEDState = HIGH;}
-          if (LEDBrightness <= 10){LEDState = LOW;}
-          val_h = LEDBrightness;
-          setStrip();
-        }
-      break;
-      //##############################################################################################
-      case C_Pulse_t: //6
-        mapInterval();
-        previousMillis = currentMillis + random(0, interval*2*100/Resolution);
-        command = C_Pulse;
-      break;
-      //##############################################################################################
-      case C_Flash: //7
-        mapColor(); 
-        mapInterval();
-        if (currentMillis - previousMillis >= interval && LEDState == LOW) {
-          previousMillis = currentMillis;
-          val_h = 100; setStrip(); LEDState = HIGH;
-        }
-        if (currentMillis - previousMillis >= T_Flash && LEDState == HIGH) {
+        if (currentMillis - previousMillis >= val_time_on && LEDState == HIGH) {
           strip.clear(); strip.show(); LEDState = LOW;
         }  
       break;
       //##############################################################################################
-      case C_Flash_r: //8
-        mapColor();
-        mapInterval();
+      case C_BLINK_T: //4
+        previousMillis = currentMillis + random(0, val_time_on + val_time_off);
+        command = C_BLINK;
+      break;
+      //##############################################################################################
+      case C_PULSE: //5
+        if (currentMillis - previousMillis >= val_time_on / ((val_bright_max - val_bright_min)/Resolution) && LEDState = LOW) {
+          LEDBrightness += Resolution;
+          previousMillis = currentMillis;
+        }
+        if (currentMillis - previousMillis >= val_time_off / ((val_bright_max - val_bright_min)/Resolution) && LEDState = HIGH) {
+          LEDBrightness -= Resolution;
+          previousMillis = currentMillis;
+        }
+        if (LEDBrightness >= val_bright_max){LEDState = HIGH;}
+        if (LEDBrightness <= val_bright_min){LEDState = LOW;}
+        val_bright = LEDBrightness;
+        setStrip();
+      break;
+      //##############################################################################################
+      case C_PULSE_T: //6
+        previousMillis = currentMillis + random(0, (val_time_on + val_time_off) * (val_bright_max - val_bright_min) / Resolution);
+        command = C_PULSE;
+      break;
+      //##############################################################################################
+      case C_FLASH: //7
+        if (currentMillis - previousMillis >= val_time_off && LEDState == LOW) {
+          previousMillis = currentMillis;
+          val_bright = val_bright_max; setStrip(); LEDState = HIGH;
+        }
+        if (currentMillis - previousMillis >= val_time_on && LEDState == HIGH) {
+          strip.clear(); strip.show(); LEDState = LOW;
+        }  
+      break;
+      //##############################################################################################
+      case C_FLASH_R: //8
         if (currentMillis - previousMillis >= interval_r & LEDState == LOW) {
           previousMillis = currentMillis;
-          val_h = 100; setStrip(); LEDState = HIGH;
+          val_bright = val_bright_max; setStrip(); LEDState = HIGH;
           interval_r = random(interval / 10, interval);
         }
         if (currentMillis - previousMillis >= T_Flash & LEDState == HIGH) {
@@ -225,59 +279,70 @@ void loop() {
         }  
       break;
       //##############################################################################################
-      case C_Ein_r: //9
+      case C_SET_R: //9
         if (currentMillis - previousMillis >= debounce){
           previousMillis = currentMillis;
-          randomColor(); val_h = 100; setStrip();
+          randomColor(); 
+          val_bright = val_bright_max; 
+          setStrip();
           command = 99;
         }
       break;
       //##############################################################################################
-      case C_Farbe: //10
-        mapColor(); mapHelligkeit();
-      break;
-      //##############################################################################################
-      case C_Pulse_r: //11
-        mapInterval();
-        if (currentMillis - previousMillis >= interval_r/(100/Resolution)) {
+      case C_PULSE_R: //11
+        if (currentMillis - previousMillis >= interval_r/((val_bright_max - val_bright_min)/Resolution)) {
           previousMillis = currentMillis;
           if (LEDState == LOW) {LEDBrightness += Resolution;} 
           else                 {LEDBrightness -= Resolution;}
-          if (LEDBrightness >= 100){LEDState = HIGH;}
-          if (LEDBrightness <= 10){LEDState = LOW; randomColor(); interval_r = random(interval / 10, interval);}
-          val_h = LEDBrightness;
+          if (LEDBrightness >= val_bright_max){LEDState = HIGH;}
+          if (LEDBrightness <= val_bright_min){LEDState = LOW; randomColor(); int interval_r = random(val_time_off, val_time_on);}
+          val_bright = LEDBrightness;
           setStrip();
         }
       break;
     }
   }
-  */
 }
 
-void mapColor(){
-  val_r = map(par_1, 0, 99, 0, 255);
-  val_g = map(par_2, 0, 99, 0, 255); 
-  val_b = map(par_3, 0, 99, 0, 255);
-}
 
 void randomColor(){
-  val_r = random(0, 4); val_g = random(0, 4); val_b = random(0, 4);
-  val_r = map(val_r, 0, 3, 0, 255);
-  val_b = map(val_b, 0, 3, 0, 255);
-  val_g = map(val_g, 0, 3, 0, 255);
+  val_red = random(0, 4); val_green = random(0, 4); val_blue = random(0, 4);
+  val_red = map(val_red, 0, 3, 0, 255);
+  val_blue = map(val_blue, 0, 3, 0, 255);
+  val_green = map(val_green, 0, 3, 0, 255);
 }
 
-void mapHelligkeit(){
-  val_h = map(par_4, 0, 99, 0, 100);
-}
 
-void mapInterval(){
-  interval = map(par_4, 0, 99, 200, 10000);
+void mapValues(){
+  val_red         = map(in_red, 0, 99, 0, 255);
+  val_green       = map(in_green, 0, 99, 0, 255); 
+  val_blue        = map(in_blue, 0, 99, 0, 255);
+  val_bright_max  = map(in_bright_max, 0, 99, 0, 100);
+  val_time_on     = map(in_time_on, 0, 99, 200, 10000);
+  val_time_off    = map(in_time_off, 0, 99, 200, 10000);
 }
 
 void setStrip(){
   strip.clear(); 
-  strip.fill(strip.Color(val_r, val_g, val_b)); 
-  strip.setBrightness(val_h); 
+  strip.fill(strip.Color(val_red, val_green, val_blue)); 
+  strip.setBrightness(val_bright); 
   strip.show();
+}
+
+int getID(){
+  int i = 0;
+  pinMode(pin_bit_1, INPUT); pinMode(pin_bit_2, INPUT); pinMode(pin_bit_3, INPUT); pinMode(pin_bit_4, INPUT); pinMode(pin_bit_5, INPUT); 
+  if (digitalRead(pin_bit_1)) {i += 1;}
+  if (digitalRead(pin_bit_2)) {i += 2;}
+  if (digitalRead(pin_bit_3)) {i += 4;}
+  if (digitalRead(pin_bit_4)) {i += 8;}
+  if (digitalRead(pin_bit_5)) {i += 16;}
+  return i;
+}
+
+void LED_startup(){
+  strip.begin();
+  strip.fill(strip.Color(0, 255, 0)); strip.setBrightness(100); strip.show(); //STARTSIGNAL GRÜN
+  delay(500);                                                                
+  strip.clear(); strip.show();
 }
