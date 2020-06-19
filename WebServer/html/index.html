@@ -33,11 +33,35 @@
             </div>
           </div>
         </div>
+        <div class="input-group mb-1">
+          <div class="input-group-prepend">
+            <span class="input-group-text">TIME A</span>
+          </div>
+          <input type="number" class="form-control" id="form-intervalMin">
+        </div>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
-            <span class="input-group-text">INTERVAL</span>
+            <span class="input-group-text">TIME B</span>
           </div>
-          <input type="number" class="form-control" id="form-interval">
+          <input type="number" class="form-control" id="form-intervalMax">
+        </div>
+        <div class="input-group mb-1">
+          <div class="input-group-prepend">
+            <span class="input-group-text">FROM ID</span>
+          </div>
+          <input type="number" class="form-control" id="form-idFrom">
+        </div>
+        <div class="input-group mb-1">
+          <div class="input-group-prepend">
+            <span class="input-group-text">TO ID</span>
+          </div>
+          <input type="number" class="form-control" id="form-idTo">
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">PATTERN</span>
+          </div>
+          <input type="number" class="form-control" id="form-idPattern">
         </div>
         <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseColor" aria-expanded="false" aria-controls="collapseColor">Color Values</button>
         <div class="collapse" id="collapseColor">
@@ -65,6 +89,12 @@
                 <span class="input-group-text">ALPHA</span>
               </div>
               <input type="number" class="form-control" id="form-alpha">
+            </div>
+            <div class="input-group mb-1">
+              <div class="input-group-prepend">
+                <span class="input-group-text">MIN ALPHA</span>
+              </div>
+              <input type="number" class="form-control" id="form-alphaMin">
             </div>
             <button type="button" class="btn btn-light" id="btn-white">Reset Color</button>
           </div>

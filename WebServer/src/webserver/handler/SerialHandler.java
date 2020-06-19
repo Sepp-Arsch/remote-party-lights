@@ -78,16 +78,21 @@ public class SerialHandler implements Runnable {
     }
 
     private String encode(LightSettings lightSettings) {
-        long fourthParameter = lightSettings.mode == LightSettings.MODE.CONTINUOUS
-                || lightSettings.mode == LightSettings.MODE.COLOR ?
-                map(lightSettings.color.getAlpha()) : lightSettings.interval;
+        return codeSegment(lightSettings.mode.value) +
+        codeSegment(map(lightSettings.color.getRed())) +
+        codeSegment(map(lightSettings.color.getGreen())) +
+        codeSegment(map(lightSettings.color.getBlue())) +
+        codeSegment(map(lightSettings.color.getAlpha())) +
+        codeSegment(map(lightSettings.alphaMin)) +
+        codeSegment(lightSettings.intervalMin) +
+        codeSegment(lightSettings.intervalMax) +
+        codeSegment(lightSettings.idFrom) +
+        codeSegment(lightSettings.idTo) +
+        codeSegment(lightSettings.idPattern);
+    }
 
-        long total = (int) (lightSettings.mode.value * Math.pow(10, 8)
-                + map(lightSettings.color.getRed()) * Math.pow(10, 6)
-                + map(lightSettings.color.getGreen()) * Math.pow(10, 4)
-                + map(lightSettings.color.getBlue()) * Math.pow(10, 2)
-                + fourthParameter);
-        return String.valueOf(total);
+    private String codeSegment(int code) {
+        return String.format("%02d", code);
     }
 
     private int map(int x) {

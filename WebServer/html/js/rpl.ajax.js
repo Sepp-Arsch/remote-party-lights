@@ -64,7 +64,12 @@ update = function() {
 		$("#form-blue").val(data.GETLIGHT.B);
 		$("#form-alpha").val(data.GETLIGHT.A);
 		$("#form-mode").val(data.GETLIGHT.MODE);
-		$("#form-interval").val(data.GETLIGHT.INTERVAL);
+		$("#form-alphaMin").val(data.GETLIGHT.Amin);
+		$("#form-intervalMin").val(data.GETLIGHT.Imin);
+		$("#form-intervalMax").val(data.GETLIGHT.Imax);
+		$("#form-idFrom").val(data.GETLIGHT.IDfrom);
+		$("#form-idTo").val(data.GETLIGHT.IDto);
+		$("#form-idPattern").val(data.GETLIGHT.IDpattern);
 
 		// colorwheel
 		colorWheel.color.setChannel("rgb", "r", data.GETLIGHT.R);
@@ -99,7 +104,12 @@ save = function() {
 		"B":$("#form-blue").val(),
 		"A":$("#form-alpha").val(),
 		"MODE":$("#form-mode").val(),
-		"INTERVAL":$("#form-interval").val(),
+		"Amin":$("#form-alphaMin").val(),
+		"Imin":$("#form-intervalMin").val(),
+		"Imax":$("#form-intervalMax").val(),
+		"IDfrom":$("#form-idFrom").val(),
+		"IDto":$("#form-idTo").val(),
+		"IDpattern":$("#form-idPattern").val(),
 		"DELAY":$("#form-delay").val(),
 		"BAUDRATE":$("#form-baudrate").val(),
 		"DATABITS":$("#form-databits").val(),

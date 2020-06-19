@@ -2,15 +2,13 @@
 #include <LoRa.h>
 #include <SPI.h>
 
-String  Test = "This text is used to test transmitting and recieving long strings, just like this one!";
-String inputString = "";      // a String to hold incoming data
-bool stringComplete = false;  // whether the string is complete
-
 // Variables
-int maxDataSize = 32; // in Bytes
+String inputString; // a String to hold incoming data
+int inputSize = 22; // in Bytes
 
 // Testing (if true, per-second alternating colors)
 bool testMode = false;
+int testTime = 1000;
 String firstTestColor = "199000099";
 String secndTestColor = "100990099";
 
@@ -27,30 +25,21 @@ void setup() {
   }
   
   Serial.setTimeout(100);
-  //inputString.reserve(64);
 }
 
 // Loop function being continuously run when Arduino is powered on
 void loop() {
-  if (stringComplete) {
-    Serial.print("Sending: "); Serial.println(inputString);
-    LoRa.beginPacket();
-    LoRa.print(inputString);
-    LoRa.endPacket();
-    // clear the string:
-    inputString = "";
-    stringComplete = false;
-  }
-  
   if(testMode) {
-    delay(1000);
+    delay(testTime);
     if(inputString != firstTestColor) {
       inputString = firstTestColor;
     } else {
       inputString = secndTestColor;
     }
-  } else if(Serial.available() > 0) {
+  } else if(Serial.available() >= inputSize) {
     inputString = Serial.readString();
+  } else if(inputString == NULL) {
+    return;
   }
 
   transmit();
@@ -63,8 +52,8 @@ void transmit() {
     return;
   }
   
-  char buffer[32];
-  inputString.toCharArray(buffer, 32);
+  char buffer[inputSize];
+  inputString.toCharArray(buffer, inputSize);
   LoRa.write(buffer);
 
   if(!LoRa.endPacket()) {
@@ -75,18 +64,4 @@ void transmit() {
 // Reporting function being run when a LoRa transmission was successfull
 void successfulTransmission() {
   Serial.println("[OK]   Sent: " + inputString);
-}
-
-void serialEvent() {
-  while (Serial.available()) {
-    // get the new byte:
-    char inChar = (char)Serial.read();
-    // add it to the inputString:
-    inputString += inChar;
-    // if the incoming character is a newline, set a flag so the main loop can
-    // do something about it:
-    if (inChar == '\n') {
-      stringComplete = true;
-    }
-  }
 }
