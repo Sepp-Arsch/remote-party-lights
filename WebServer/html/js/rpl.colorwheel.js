@@ -47,10 +47,17 @@ $("#form-alpha").change(function() {
   colorWheel.color.setChannel("rgb", "a", $(this).val() / 255);
 });
 
-$("#btn-white").click(function() {
-  colorWheel.color.reset();
-  $("#form-red").val(255);
-  $("#form-green").val(255);
-  $("#form-blue").val(255);
-  $("#form-alpha").val(255);
+resetColorForm = function() {
+    colorWheel.color.reset();
+    $("#form-red").val(255);
+    $("#form-green").val(255);
+    $("#form-blue").val(255);
+    $("#form-alpha").val(255);
+    $("#form-alphaMin").val(0);
+}
+
+$("#btn-white").click(resetColorForm);
+$("#btn-white-save").click(function() {
+    resetColorForm();
+    save();
 });

@@ -56,7 +56,7 @@ update = function() {
 			$("#btn-connect").prop('disabled', true);
 			$("#btn-connect").show();
 			$("#btn-noports").show();
-		}		
+		}
 
 		// light
 		$("#form-red").val(data.GETLIGHT.R);
@@ -72,10 +72,10 @@ update = function() {
 		$("#form-idPattern").val(data.GETLIGHT.IDpattern);
 
 		// colorwheel
-		colorWheel.color.setChannel("rgb", "r", data.GETLIGHT.R);
-		colorWheel.color.setChannel("rgb", "g", data.GETLIGHT.G);
-		colorWheel.color.setChannel("rgb", "b", data.GETLIGHT.B);
-		colorWheel.color.setChannel("rgb", "a", data.GETLIGHT.A / 255);
+		colorWheel.color.setChannel("rgba", "r", data.GETLIGHT.R);
+		colorWheel.color.setChannel("rgba", "g", data.GETLIGHT.G);
+		colorWheel.color.setChannel("rgba", "b", data.GETLIGHT.B);
+        colorWheel.color.setChannel("rgba", "a", data.GETLIGHT.A / 255);
 
 		// light modes
 		$("#drop-mode").empty();
