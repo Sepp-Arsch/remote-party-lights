@@ -2,16 +2,18 @@
 #include <LoRa.h>
 #include <SPI.h>
 
-// Variables
+// General variables
 String inputString; // a String to hold incoming data
 int inputSize = 22; // in Bytes
 
-// Testing (if true, per-second alternating colors)
-bool testMode = false;
-int testTime = 1000;
-String firstTestColor = "199000099";
-String secndTestColor = "100990099";
+// Testing variables
+String testCommando = "99"; // NULL commando code
+int testTime = 1000; // in seconds
+String firstTestColor = "0199009999000000009900"; // Set magenta
+String secndTestColor = "0100999999000000009900"; // SET cyan
 
+// Class variables (do not change)
+bool testToggle = true;
 
 // Setup function being run once when Arduino is powered on
 void setup() {
@@ -29,31 +31,36 @@ void setup() {
 
 // Loop function being continuously run when Arduino is powered on
 void loop() {
-  if(testMode) {
-    delay(testTime);
-    if(inputString != firstTestColor) {
-      inputString = firstTestColor;
-    } else {
-      inputString = secndTestColor;
-    }
-  } else if(Serial.available() >= inputSize) {
+  if(Serial.available() >= inputSize) {
     inputString = Serial.readString();
   } else if(inputString == NULL) {
     return;
   }
 
-  transmit();
+  if(inputString.substring(0,2) == testCommando) {
+    // if testing code, perform alternating colors scheme
+    delay(testTime);
+    if(testToggle) {
+      transmit(firstTestColor);
+    } else {
+      transmit(secndTestColor);
+    }
+    testToggle = !testToggle;
+  } else {
+    //  sending actual code
+    transmit(inputString);
+  }
 }
 
 // Transmit function sending inputString via LoRa
-void transmit() {
+void transmit(String code) {
   if(!LoRa.beginPacket()) {
     Serial.println("[FAIL] Begin LoRa Packet");
     return;
   }
   
   char buffer[inputSize];
-  inputString.toCharArray(buffer, inputSize);
+  code.toCharArray(buffer, inputSize);
   LoRa.write(buffer);
 
   if(!LoRa.endPacket()) {

@@ -42,6 +42,7 @@ public class LightSettings {
     }
 
     public enum MODE {
+        TEST(99),
         KILL(98),
         SET(1),
         OFF(2),
