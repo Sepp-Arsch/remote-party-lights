@@ -61,7 +61,7 @@ void transmit(String code) {
   
   char buffer[inputSize];
   code.toCharArray(buffer, inputSize);
-  LoRa.write(buffer);
+  LoRa.print(buffer);
 
   if(!LoRa.endPacket()) {
     Serial.println("[FAIL] End LoRa Packet");
