@@ -3,17 +3,15 @@
 #include <SPI.h>
 
 // Variables
-String inputString; // a String to hold incoming data
-int inputSize = 22; // in Bytes
-
-// Testing (if true, per-second alternating colors)
-bool testMode = false;
-int testTime = 1000;
-String firstTestColor = "199000099";
-String secndTestColor = "100990099";
+String  inputString;        // a String to hold incoming data
+int     inputSize       =   22; // in Bytes
 
 
-// Setup function being run once when Arduino is powered on
+bool    testMode        =   0; // Testing (if true, per-second alternating colors)
+int     testTime        =   1000;
+String  firstTestColor  =   "0199000099000000009900";
+String  secndTestColor  =   "0100990099000000009900";
+
 void setup() {
   Serial.begin(9600);
 
@@ -27,41 +25,37 @@ void setup() {
   Serial.setTimeout(100);
 }
 
-// Loop function being continuously run when Arduino is powered on
 void loop() {
   if(testMode) {
     delay(testTime);
-    if(inputString != firstTestColor) {
-      inputString = firstTestColor;
-    } else {
-      inputString = secndTestColor;
-    }
-  } else if(Serial.available() >= inputSize) {
+    if(inputString != firstTestColor) { inputString = firstTestColor; } else { inputString = secndTestColor; }
+  } 
+  else if(Serial.available() >= inputSize) {
     inputString = Serial.readString();
-  } else if(inputString == NULL) {
-    return;
-  }
+    inputString.trim();
+    Serial.print("[RECEIVED] ");
+    Serial.println(inputString);
+  } 
+  else if(inputString == NULL) { return; }
 
   transmit();
+  inputString = "";
+  delay(10);
 }
 
 // Transmit function sending inputString via LoRa
 void transmit() {
-  if(!LoRa.beginPacket()) {
-    Serial.println("[FAIL] Begin LoRa Packet");
-    return;
-  }
+  if(!LoRa.beginPacket()) { Serial.println("[FAIL] Begin LoRa Packet"); return; }
   
   char buffer[inputSize];
   inputString.toCharArray(buffer, inputSize);
-  LoRa.write(buffer);
+  LoRa.print(buffer);
 
-  if(!LoRa.endPacket()) {
-    Serial.println("[FAIL] End LoRa Packet");
-  }
+  if(!LoRa.endPacket()) { Serial.println("[FAIL] End LoRa Packet");}
+  Serial.print("[SENT] ");
+  Serial.println(inputString);
 }
 
-// Reporting function being run when a LoRa transmission was successfull
-void successfulTransmission() {
+void successfulTransmission() { // Reporting function being run when a LoRa transmission was successfull
   Serial.println("[OK]   Sent: " + inputString);
 }
