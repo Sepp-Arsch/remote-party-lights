@@ -4,6 +4,8 @@
       <root url="jar://$PROJECT_DIR$/libs/jSerialComm-2.6.2.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ideaLibSources/jSerialComm-2.6.2-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>
