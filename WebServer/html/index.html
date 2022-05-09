@@ -19,12 +19,12 @@
     <div class="row">
       <div class="col-md-6 mb-3">
         <div class="mb-3">
-          <button type="button" class="btn btn-primary" id="btn-update"><img src="svg/download.svg" color="white"/> Update</button> <button type="button" class="btn btn-primary" id="btn-save"><img src="svg/upload.svg" color="white"/> Save</button>
+          <button type="button" class="btn btn-primary" id="btn-update"><img src="svg/download.svg" color="white"/> Retrieve</button> <button type="button" class="btn btn-primary" id="btn-save"><img src="svg/upload.svg" color="white"/> Send</button>
         </div>
         <div class="wheel col-12 mb-3" id="colorWheel"></div>
         <div class="input-group mb-1">
           <div class="input-group-prepend">
-            <span class="input-group-text">MODE</span>
+            <span class="input-group-text">Mode ID</span>
           </div>
           <input type="text" class="form-control" id="form-mode">
           <div class="input-group-append">
@@ -35,64 +35,68 @@
         </div>
         <div class="input-group mb-1">
           <div class="input-group-prepend">
-            <span class="input-group-text">TIME A</span>
+            <span class="input-group-text">Time on</span>
           </div>
           <input type="number" class="form-control" id="form-intervalMin">
         </div>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
-            <span class="input-group-text">TIME B</span>
+            <span class="input-group-text">Time off</span>
           </div>
           <input type="number" class="form-control" id="form-intervalMax">
         </div>
         <div class="input-group mb-1">
           <div class="input-group-prepend">
-            <span class="input-group-text">FROM ID</span>
+            <span class="input-group-text">From ID</span>
           </div>
           <input type="number" class="form-control" id="form-idFrom">
         </div>
         <div class="input-group mb-1">
           <div class="input-group-prepend">
-            <span class="input-group-text">TO ID</span>
+            <span class="input-group-text">To ID</span>
           </div>
           <input type="number" class="form-control" id="form-idTo">
         </div>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
-            <span class="input-group-text">PATTERN</span>
+            <span class="input-group-text">Pattern ID</span>
           </div>
           <input type="number" class="form-control" id="form-idPattern">
         </div>
-        <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseColor" aria-expanded="false" aria-controls="collapseColor">Color Values</button>
+        <!-- <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseMode" aria-expanded="false" aria-controls="collapseColor">Mode details</button>
+        <div class="collapse" id="collapseMode">
+          <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseColor" aria-expanded="false" aria-controls="collapseColor">Mode details</button>
+        </div> -->
+        <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseColor" aria-expanded="false" aria-controls="collapseColor">Color details</button>
         <div class="collapse" id="collapseColor">
           <div class="card card-body">
             <div class="input-group mb-1">
               <div class="input-group-prepend">
-                <span class="input-group-text">RED</span>
+                <span class="input-group-text">Red</span>
               </div>
               <input type="number" class="form-control" id="form-red">
             </div>
             <div class="input-group mb-1">
               <div class="input-group-prepend">
-                <span class="input-group-text">GREEN</span>
+                <span class="input-group-text">Green</span>
               </div>
               <input type="number" class="form-control" id="form-green">
             </div>
             <div class="input-group mb-1">
               <div class="input-group-prepend">
-                <span class="input-group-text">BLUE</span>
+                <span class="input-group-text">Blue</span>
               </div>
               <input type="number" class="form-control" id="form-blue">
             </div>
             <div class="input-group mb-1">
               <div class="input-group-prepend">
-                <span class="input-group-text">ALPHA</span>
+                <span class="input-group-text">Alpha max.</span>
               </div>
               <input type="number" class="form-control" id="form-alpha">
             </div>
             <div class="input-group mb-1">
               <div class="input-group-prepend">
-                <span class="input-group-text">MIN ALPHA</span>
+                <span class="input-group-text">Alpha min.</span>
               </div>
               <input type="number" class="form-control" id="form-alphaMin">
             </div>
@@ -113,24 +117,24 @@
         </div>
         <div class="input-group mb-1">
           <div class="input-group-prepend">
-            <span class="input-group-text">Save delay</span>
+            <span class="input-group-text">Send delay [ms]</span>
           </div>
           <input type="number" class="form-control" id="form-save-delay" value="100">
         </div>
         <div class="custom-control custom-checkbox mb-3">
           <input type="checkbox" class="custom-control-input" id="check-save-delay">
-          <label class="custom-control-label" for="check-save-delay">Auto-save settings. <em>(default: manual save)</em></label>
+          <label class="custom-control-label" for="check-save-delay">Auto-send settings.</label>
         </div>
 
         <div class="input-group mb-1">
           <div class="input-group-prepend">
-            <span class="input-group-text">Serial delay</span>
+            <span class="input-group-text">Serial delay [ms]</span>
           </div>
           <input type="number" class="form-control" id="form-delay">
         </div>
         <div class="custom-control custom-checkbox mb-3">
           <input type="checkbox" class="custom-control-input" id="check-onlysendonchange">
-          <label class="custom-control-label" for="check-onlysendonchange">Send serial package only on-change. <em>(default: auto-send)</em></label>
+          <label class="custom-control-label" for="check-onlysendonchange">Send serial package only on-change.</label>
         </div>
 
         <div class="input-group mb-1">
@@ -149,7 +153,7 @@
           <div class="input-group-prepend">
             <span class="input-group-text">Data bits*</span>
           </div>
-          <input type="number" class="form-control" id="form-databits">
+          <input type="number" disabled class="form-control" id="form-databits">
         </div>
         <div class="input-group mb-1">
           <div class="input-group-prepend">
