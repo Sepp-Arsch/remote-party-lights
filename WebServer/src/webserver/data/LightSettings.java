@@ -42,17 +42,41 @@ public class LightSettings {
     }
 
     public enum MODE {
+        NULL(99),
         KILL(98),
         SET(1),
         OFF(2),
         BLINK(3),
-        BLINK_T(4),
+        BLINK_SD(4),
         PULSE(5),
-        PULSE_T(6),
+        PULSE_SD(6),
         FLASH(7),
-        FLASH_R(8),
-        SET_R(9),
-        PULSE_R(11);
+        FLASH_RT(8),
+        SET_RC(9),
+        FADE(10),
+        PULSE_RCT(11),
+        FLAME(12),
+        RAINBOW(13),
+        RAINBOW_RC(14),
+        SHIFT(15),
+        SHIFT_B(16),
+        SHIFT_RAINBOW(17),
+        SHIFT_RAINBOW_RC(18),
+        SHIFT_CHAOTIC(19),
+        SET_RL_RC(20),
+        CHASE(21),
+        CHASE_B(22),
+        CHASE_FADE(23),
+        CHASE_FADE_B(24),
+        CHASE_SD(25),
+        CHASE_B_SD(26),
+        CHASE_FADE_SD(27),
+        CHASE_FADE_B_SD(28),
+        SET_ONLY(29),
+        KNIGHTRIDER(30),
+        KNIGHTRIDER_SD(31),
+        LIGHTNING(32),
+        SWEEP(33);
 
         public final int value;
 
