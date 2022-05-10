@@ -261,7 +261,8 @@ void setup() {
 void loop() {
   currentMillis = millis();
   int packetSize = LoRa.parsePacket();
-  if (packetSize == 21 || !DemoDone) { //Serial.println(packetSize);
+  //if (packetSize >0){Serial.println(packetSize);}
+  if (packetSize == 22 || !DemoDone) { //Serial.println(packetSize);
     inputString = "";
     while (LoRa.available()) {
       char inChar = (char)LoRa.read();

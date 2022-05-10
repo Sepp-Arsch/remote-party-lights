@@ -32,6 +32,7 @@ void loop() {
   } 
   else if(Serial.available() >= inputSize) {
     inputString = Serial.readString();
+    Serial.println(inputString);
     inputString.trim();
     Serial.print("[RECEIVED] ");
     Serial.println(inputString);
@@ -46,9 +47,11 @@ void loop() {
 // Transmit function sending inputString via LoRa
 void transmit() {
   if(!LoRa.beginPacket()) { Serial.println("[FAIL] Begin LoRa Packet"); return; }
+  //Serial.println(inputString);
   
-  char buffer[inputSize];
-  inputString.toCharArray(buffer, inputSize);
+  char buffer[0];
+  inputString.toCharArray(buffer, inputSize +1);
+  Serial.println(buffer);
   LoRa.print(buffer);
 
   if(!LoRa.endPacket()) { Serial.println("[FAIL] End LoRa Packet");}
