@@ -88,8 +88,7 @@ public class SerialHandler implements Runnable {
         codeSegment(mapTimeMs(lightSettings.intervalMax)) +
         codeSegment(lightSettings.idFrom) +
         codeSegment(lightSettings.idTo) +
-        codeSegment(lightSettings.idPattern) +
-        "0";
+        codeSegment(lightSettings.idPattern);
     }
 
     private String codeSegment(int code) {
