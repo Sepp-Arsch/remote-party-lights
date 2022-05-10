@@ -46,31 +46,31 @@
           <div class="input-group-prepend">
             <span class="input-group-text">Time on [ms]</span>
           </div>
-          <input type="number" class="form-control" id="form-intervalMin">
+          <input type="number" class="form-control" max="9999" min="0" id="form-intervalMin">
         </div>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text">Time off [ms]</span>
           </div>
-          <input type="number" class="form-control" id="form-intervalMax">
+          <input type="number" class="form-control" max="9999" min="0"  id="form-intervalMax">
         </div>
         <div class="input-group mb-1">
           <div class="input-group-prepend">
             <span class="input-group-text">From ID</span>
           </div>
-          <input type="number" class="form-control" id="form-idFrom">
+          <input type="number" class="form-control" max="99" min="0" id="form-idFrom">
         </div>
         <div class="input-group mb-1">
           <div class="input-group-prepend">
             <span class="input-group-text">To ID</span>
           </div>
-          <input type="number" class="form-control" id="form-idTo">
+          <input type="number" class="form-control" max="99" min="0" id="form-idTo">
         </div>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text">Pattern ID</span>
           </div>
-          <input type="number" class="form-control" id="form-idPattern">
+          <input type="number" class="form-control" max="99" min="0" id="form-idPattern">
         </div>
         <button class="btn btn-outline-secondary mb-1" type="button" data-toggle="collapse" data-target="#collapseColor" aria-expanded="false" aria-controls="collapseColor">Color details</button>
         <div class="collapse" id="collapseColor">
@@ -163,13 +163,13 @@
           <div class="input-group-prepend">
             <span class="input-group-text">Stop bits*</span>
           </div>
-          <input type="number" class="form-control" id="form-stopbits">
+          <input type="number" class="form-control" disabled id="form-stopbits">
         </div>
         <div class="input-group mb-1">
           <div class="input-group-prepend">
             <span class="input-group-text">Parity*</span>
           </div>
-          <input type="number" class="form-control" id="form-parity">
+          <input type="number" class="form-control" disabled id="form-parity">
         </div>
         <p><small>* Requires re-connect before changes are active.</small></p>
         <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseResponse" aria-expanded="false" aria-controls="collapseResponse">Server response</button>
