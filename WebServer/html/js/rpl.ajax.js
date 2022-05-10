@@ -18,6 +18,11 @@ addModeLink = function(item, value) {
 	$("#mode-" + item).click(function() {
 		$("#form-mode").val(value.toString());
 	});
+
+    $("#mode-quick-switch").append("<button class=\"btn btn-outline-secondary mode-button\" type=\"button\" id=\"mode-button-" + item + "\" href=\"#\">" + value + "</button>");
+    $("#mode-button-" + item).click(function() {
+        $("#form-mode").val(value.toString());
+    });
 };
 
 // Visible data

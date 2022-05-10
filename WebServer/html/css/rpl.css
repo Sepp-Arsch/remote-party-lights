@@ -11,3 +11,17 @@
 #panel-server-response {
 	font-size: 12px;
 }
+
+#mode-quick-switch {
+    flex-direction: unset;
+}
+
+.mode-button {
+    margin: 2px 2px;
+    display: inline-block;
+    width: 32%;
+}
+
+.spacer {
+    color: white;
+}
