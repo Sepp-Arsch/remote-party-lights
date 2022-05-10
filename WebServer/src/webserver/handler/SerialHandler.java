@@ -84,8 +84,8 @@ public class SerialHandler implements Runnable {
         codeSegment(map(lightSettings.color.getBlue())) +
         codeSegment(map(lightSettings.color.getAlpha())) +
         codeSegment(map(lightSettings.alphaMin)) +
-        codeSegment(lightSettings.intervalMin) +
-        codeSegment(lightSettings.intervalMax) +
+        codeSegment(mapTimeMs(lightSettings.intervalMin)) +
+        codeSegment(mapTimeMs(lightSettings.intervalMax)) +
         codeSegment(lightSettings.idFrom) +
         codeSegment(lightSettings.idTo) +
         codeSegment(lightSettings.idPattern);
@@ -97,6 +97,10 @@ public class SerialHandler implements Runnable {
 
     private int map(int x) {
         return x * 99 / 255;
+    }
+
+    private int mapTimeMs(int x) {
+        return x / 100;
     }
 
     @Override
