@@ -51,6 +51,9 @@ public class JsonHandler {
                     case SETLIGHT:
                         setLight(jsonIn, jsonOut);
                         break;
+                    case TRANSMIT:
+                        transmit(jsonIn);
+                        break;
                     case GETSERIAL:
                         getSerial(jsonOut);
                         break;
@@ -110,6 +113,10 @@ public class JsonHandler {
         out.put(CMD.SETLIGHT.toString(), true);
     }
 
+    private void transmit(JSONObject in) {
+        server.transmit(in.getString("MODE"));
+    }
+
     private void getSerial(JSONObject out) {
         SerialSettings serialSettings = server.getSerialSettings();
         JSONObject obj = new JSONObject();
@@ -164,6 +171,7 @@ public class JsonHandler {
         PORTS,
         GETLIGHT,
         SETLIGHT,
+        TRANSMIT,
         GETSERIAL,
         SETSERIAL,
         STATUS,

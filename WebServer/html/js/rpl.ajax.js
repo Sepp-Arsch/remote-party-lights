@@ -127,6 +127,16 @@ save = function() {
 	});
 };
 
+transmit = function() {
+	send({
+		"CMD": ["TRANSMIT"],
+		"MODE":$("#form-manual").val()
+	}, function(data) {
+     		$("#panel-server-response").html("" + new Date(Number(new Date())) + " - "
+     			+ JSON.stringify(data));
+    });
+};
+
 connect = function() {
 	var port = "";
     $("#btn-port-group .active").each(function(){
@@ -160,4 +170,5 @@ $("#btn-noports").click(update);
 $("#btn-connect").click(connect);
 $("#btn-disconnect").click(disconnect);
 $("#btn-save").click(save);
-$("#check-save-delay").change(autoSave);	
+$("#check-save-delay").change(autoSave);
+$("#btn-transmit").click(transmit);

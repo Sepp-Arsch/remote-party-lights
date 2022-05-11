@@ -186,6 +186,10 @@ public class RunWebServer implements Runnable {
         serialHandler.setLightSettings(lightSettings);
     }
 
+    public void transmit(String message) {
+        serialHandler.transmit(message);
+    }
+
     private byte[] readFileData(File file, int fileLength) throws IOException {
         FileInputStream fileIn = null;
         byte[] fileData = new byte[fileLength];

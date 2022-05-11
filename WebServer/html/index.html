@@ -27,6 +27,15 @@
         <div class="mb-3">
           <div class="input-group mb-1">
             <div class="input-group-prepend">
+              <span class="input-group-text">Manual CMD</span>
+            </div>
+            <input type="text" class="form-control" maxlength="22" id="form-manual" value="3299999999000000009900"> <!-- 22 == Arduino inputSize, value is code for LIGHTNING -->
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" type="button" id="btn-transmit">Transmit</button>
+            </div>
+          </div>
+          <div class="input-group mb-1">
+            <div class="input-group-prepend">
               <span class="input-group-text">Mode ID</span>
             </div>
             <input type="text" class="form-control" id="form-mode">
@@ -34,8 +43,8 @@
               <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
               <div class="dropdown-menu" id="drop-mode">
               </div>
+              <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseMode" aria-expanded="false" aria-controls="collapseMode">Quick switch</button>
             </div>
-            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseMode" aria-expanded="false" aria-controls="collapseMode">Quick switch</button>
           </div>
           <div class="collapse" id="collapseMode">
             <div class="card card-body input-group" id="mode-quick-switch">
