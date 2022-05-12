@@ -76,7 +76,7 @@
 #define pin_LED               6        //digital pin for LED control                 6
 
 #define LEDCount             20        //lenght of LED stripe                       20
-#define ModuleCount          20        //number of balloons                         20
+#define ModuleCount          22        //number of balloons                         20
 #define C_Cooldown         2000        //cooldown time for static commands        2000
 #define resolution            2        //increments when fading                      2
 #define T_Flash             100        //duration of a flash in ms                 100
@@ -196,35 +196,35 @@ byte ID                       =   0;      //the modules ID
 #define PatternCount 28                   //number of predefined patterns
 
 bool pattern[PatternCount][ModuleCount] = {                     
-//0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19   //ID
-{ 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 }, //pattern  1: every even ID
-{ 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1 }, //pattern  2: every odd ID
-{ 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0 }, //pattern  3: every 3rd ID
-{ 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1 }, //pattern  4: every 3rd ID NOT
-{ 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 }, //pattern  5: every 4th ID
-{ 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0 }, //pattern  6: every 4th ID NOT
-{ 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }, //pattern  7: every 5th ID
-{ 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0 }, //pattern  8: every 5th ID NOT
-{ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0 }, //pattern  9: every 6th ID
-{ 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1 }, //pattern 10: every 6th ID NOT
-{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 }, //pattern 11: every 7th ID
-{ 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1 }, //pattern 12: every 7th ID NOT
-{ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 }, //pattern 13: every 8th ID
-{ 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1 }, //pattern 14: every 8th ID NOT
-{ 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0 }, //pattern 15: alternating pairs of 2, starting with ID 0
-{ 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1 }, //pattern 16: alternating pairs of 2, starting with ID 2
-{ 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1 }, //pattern 17: alternating pairs of 3, starting with ID 0
-{ 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0 }, //pattern 18: alternating pairs of 3, starting with ID 3
-{ 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1 }, //pattern 19: alternating pairs of 4, starting with ID 0
-{ 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0 }, //pattern 20: alternating pairs of 4, starting with ID 4
-{ 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 }, //pattern 21: alternating pairs of 5, starting with ID 0
-{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1 }, //pattern 22: alternating pairs of 5, starting with ID 5
-{ 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0 }, //pattern 23: alternating pairs of 6, starting with ID 0
-{ 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1 }, //pattern 24: alternating pairs of 6, starting with ID 6
-{ 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1 }, //pattern 25: alternating pairs of 7, starting with ID 0
-{ 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 }, //pattern 26: alternating pairs of 7, starting with ID 7
-{ 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 }, //pattern 27: alternating pairs of 8, starting with ID 0
-{ 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 }  //pattern 28: alternating pairs of 8, starting with ID 8
+//0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21  //ID
+{ 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 }, //pattern  1: every odd ID
+{ 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1 }, //pattern  2: every even ID
+{ 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0 }, //pattern  3: every 3rd ID
+{ 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0 }, //pattern  4: every 3rd ID NOT
+{ 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0 ,0 },  //pattern  5: every 4th ID
+{ 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1 ,1 },  //pattern  6: every 4th ID NOT
+{ 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0 }, //pattern  7: every 5th ID
+{ 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1 }, //pattern  8: every 5th ID NOT
+{ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 }, //pattern  9: every 6th ID
+{ 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1 }, //pattern 10: every 6th ID NOT
+{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0 }, //pattern 11: every 7th ID
+{ 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1 }, //pattern 12: every 7th ID NOT
+{ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 }, //pattern 13: every 8th ID
+{ 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1 }, //pattern 14: every 8th ID NOT
+{ 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1 }, //pattern 15: alternating pairs of 2, starting with ID 0
+{ 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0 }, //pattern 16: alternating pairs of 2, starting with ID 2
+{ 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0 }, //pattern 17: alternating pairs of 3, starting with ID 0
+{ 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1 }, //pattern 18: alternating pairs of 3, starting with ID 3
+{ 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0 }, //pattern 19: alternating pairs of 4, starting with ID 0
+{ 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1 }, //pattern 20: alternating pairs of 4, starting with ID 4
+{ 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1 }, //pattern 21: alternating pairs of 5, starting with ID 0
+{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0 }, //pattern 22: alternating pairs of 5, starting with ID 5
+{ 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 }, //pattern 23: alternating pairs of 6, starting with ID 0
+{ 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 }, //pattern 24: alternating pairs of 6, starting with ID 6
+{ 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0 }, //pattern 25: alternating pairs of 7, starting with ID 0
+{ 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 }, //pattern 26: alternating pairs of 7, starting with ID 7
+{ 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1 }, //pattern 27: alternating pairs of 8, starting with ID 0
+{ 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 }  //pattern 28: alternating pairs of 8, starting with ID 8
 };
 
 //{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, //pattern XX: all 1
@@ -281,7 +281,9 @@ void loop() {
         command = C_SET_ONLY;
       }
       else if (in_command == C_LIGHTNING){
-        last_command = command;
+        if (command != C_NULL){
+          last_command = command;
+        }
         command = C_LIGHTNING;
       }
       else if (checkID() && checkCooldown()){
@@ -305,6 +307,7 @@ void loop() {
       case C_SET: //1
         val_bright = val_bright_max;
         setStrip(val_red, val_green, val_blue, val_bright);
+        last_command = command;
         command = C_NULL;
         
         
@@ -312,6 +315,7 @@ void loop() {
       //#####################################################################################################################################################
       case C_OFF: //2
         strip.clear(); strip.show();
+        last_command = command;
         command = C_NULL;
       break;
       //#####################################################################################################################################################
@@ -359,8 +363,8 @@ void loop() {
         if (val_bright >= val_bright_max){LEDState = HIGH;}
         if (val_bright <= val_bright_min){
           LEDState = LOW;
-          val_time_on = 3*in_time_on * random(1, 100);
-          val_time_off = 3*in_time_off * random(1, 100);
+          val_time_on = random(1,3)*in_time_on * random(1, 100);
+          val_time_off = random (1,3)*in_time_off * random(1, 100);
         }
 
         //val_bright_max = random(val_bright_max, val_bright_min);
@@ -406,6 +410,7 @@ void loop() {
       case C_SET_RC: //9
         randomColor(); 
         setStrip(val_red, val_green, val_blue, val_bright);
+        last_command = command;
         command = C_NULL;
       break;
       //#####################################################################################################################################################
@@ -418,6 +423,7 @@ void loop() {
                     map(FadeCounter, 0, 100, last_blue, val_blue),
                     map(FadeCounter, 0, 100, last_bright, val_bright_max));
           if (FadeCounter >= 100) {
+            last_command = command;
             command = C_NULL;
           }
         }
@@ -473,6 +479,7 @@ void loop() {
           strip.setBrightness(map(FadeCounter, 0, 100, last_bright, val_bright_max));
           strip.show();
           if (FadeCounter >= LEDCount) {
+            last_command = command;
             command = C_NULL;
           }
           FadeCounter ++;
@@ -486,6 +493,7 @@ void loop() {
           strip.setBrightness(map(FadeCounter, 0, 100, last_bright, val_bright_max));
           strip.show();
           if (FadeCounter >= LEDCount) {
+            last_command = command;
             command = C_NULL;
           }
           FadeCounter ++;
@@ -523,7 +531,7 @@ void loop() {
           }
           strip.setBrightness(val_bright_max); strip.show();
           ColorCounter ++;
-          if (ColorCounter > LEDCount) {command = C_NULL;}
+          if (ColorCounter > LEDCount) {last_command = command; command = C_NULL;}
         }
       break;
       //#####################################################################################################################################################
@@ -634,11 +642,15 @@ void loop() {
       break;
       //#####################################################################################################################################################
       case C_LIGHTNING: //32
+        Serial.println("[Execution] command 32 (Lightning)");
         previousMillis = currentMillis + T_Flash;
         setStrip(255, 255, 255, 255);
         delay(T_Flash);
         strip.clear(); strip.show();
         command = last_command;
+        Serial.print("[Execution] command ");
+        Serial.println(command);
+        
       break;
       //#####################################################################################################################################################
       case C_SWEEP: //33
